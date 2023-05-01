@@ -4,7 +4,7 @@
 ![img.png](img_1.png)
 
 ## How It Works
-Swmon scans network blocks with ping. Then, try to gather system information, LLDP connectivity, and STP port statuses from alive hosts via SNMP. Finally, it work to "connect all the ends" and build a logical topology of the network.
+Swmon scans network blocks with ping. Then, try to gather system information, LLDP connectivity, and STP port statuses from alive hosts via SNMP. Finally, it work to "connect all the ends" and build a logical topology of the network. And writes it to Nagios config.
 
 ### Output
 As a result of the scan swmon will generate three files:
@@ -14,9 +14,11 @@ As a result of the scan swmon will generate three files:
 - [Nagvis](https://github.com/NagVis/nagvis) static map config written to path you decide.
 - `swmon_hosts_model.json` - state of the network during last scan.
 
-There are nothing else. No straight dependencies. It's not a deamon. Swmon just runs and generate three config files.   
+There are nothing else. Swmon just runs and generate three config files.   
 
-All futher monitoring on Nagios behalf.
+All futher monitoring on Nagios behalf.  
+
+Visualization - on Nagvis.
 
 ### Network devices requirements
 
