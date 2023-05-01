@@ -4,7 +4,7 @@
 ![img.png](img_1.png)
 
 ## How It Works
-Swmon scans network blocks with ping. Then, try to gather system information, LLDP connectivity, and STP port statuses from alive hosts via SNMP. Finally, it work to "connect all the ends" and build a logical topology of the network. And writes it to Nagios config.
+Swmon scans network blocks with ping. Then, try to gather system information and LLDP links from alive hosts via SNMP. Finally, it work to "connect all the ends" and build a logical topology of the network.
 
 ### Output
 As a result of the scan swmon will generate three files:
