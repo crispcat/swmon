@@ -1,0 +1,7 @@
+- device_match_regex: DGS-1210-52/ME
+  target_oid: SNMPv2-SMI::enterprises.171.10.76.29.1.6.2.1.12
+  value_map: mstp_statuses
+
+- device_match_regex: .*
+  target_oid: MSTP-MIB::swMSTPMstPortStatus
+  value_map: mstp_statuses

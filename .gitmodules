@@ -1,0 +1,6 @@
+[submodule "deps/ndoutils"]
+	path = deps/ndoutils
+	url = https://github.com/crispcat/ndoutils.git
+[submodule "deps/nagvis"]
+	path = deps/nagvis
+	url = https://github.com/crispcat/nagvis.git
