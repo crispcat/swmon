@@ -9,13 +9,14 @@ import (
 //-----------------------------------------CONFIG---------------------------------------------------------------------//
 
 var NEW_CONFIG = SwmonConfig{
-	AutoRestartNagios: false,
-	LogsPath:          LOG_FILE,
-	Workers:           0,
-	RootAddr:          "",
-	WwwUser:           "www-data",
-	NagvisMap:         "/usr/local/nagvis/etc/maps/swmon-static.cfg",
-	Networks:          []SwmonNetworkArgs{DEFAULT_NETWORK_ARGS},
+	LogsPath:        LOG_FILE,
+	Workers:         0,
+	RootAddr:        "",
+	WwwUser:         "www-data",
+	NagvisMap:       "/usr/local/nagvis/etc/maps/swmon-static.cfg",
+	Networks:        []SwmonNetworkArgs{DEFAULT_NETWORK_ARGS},
+	ForgetHosts:     false,
+	PostExecCommand: "sudo systemctl restart nagios",
 }
 
 var DEFAULT_NETWORK_ARGS = SwmonNetworkArgs{
@@ -41,10 +42,10 @@ const OS_FILE_PERMISSIONS_STRICT = 0660
 const OS_FILE_PERMISSIONS_R = 0664
 const BACKUP_ROOT = shared.ETC + "backup/"
 
-const HOSTS_MODEL_FILE = "./swmon_hosts_model.json"
+const HOSTS_MODEL_FILE = shared.ETC + "swmon_hosts_model.json"
 const HOSTS_MODEL_FILE_BACKUP_PREFIX = BACKUP_ROOT + "swmon_hosts_model_"
 
-const HOSTS_CONFIG_FILE = "./swmon_nagios_hosts.cfg"
+const HOSTS_CONFIG_FILE = shared.ETC + "swmon_nagios_hosts.cfg"
 const HOSTS_CONFIG_FILE_BACKUP_PREFIX = BACKUP_ROOT + "swmon_nagios_hosts_"
 
 const LOG_FILE = shared.ETC + "swmon_log"

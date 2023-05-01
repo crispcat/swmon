@@ -24,6 +24,7 @@ func CreateSnmpClient(task *NetTask) *goSNMP.GoSNMP {
 		Port:      task.swargs.SnmpPort,
 		Version:   version,
 		Community: task.swargs.SnmpCommunityString,
+		MsgFlags:  SNMP_MSG_FLAGS,
 		Timeout:   time.Duration(task.swargs.SnmpTimeout) * time.Millisecond,
 	}
 }

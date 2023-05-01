@@ -11,7 +11,7 @@ func SNMP_GetLLDP(task *NetTask, queue *NetTaskQueue, hostsMap *HostsModel) {
 
 	defer finalizer()
 
-	Log("[%s] starting SNMP LLDP probes...", task.ip)
+	WriteAll("[%s] Starting LLDP probes...", task.ip)
 
 	host := hostsMap.GetOrCreate(task.ip)
 
@@ -150,9 +150,5 @@ func SNMP_GetLLDP(task *NetTask, queue *NetTaskQueue, hostsMap *HostsModel) {
 		return nil
 	})
 
-	//      TODO: MAYBE ADD FOLLOWING METHODS
-	//	"LLDP-MIB::lldpRemSysCapSupported",
-	//	"LLDP-MIB::lldpRemSysCapEnabled",
-	//      "LLDP-MIB::lldpRemPortIdSubtype",
-	//	"LLDP-MIB::lldpRemChassisIdSubtype",
+	WriteAll("[%s] LLDP probes DONE!", task.ip)
 }

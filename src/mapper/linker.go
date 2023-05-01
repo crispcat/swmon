@@ -8,7 +8,7 @@ import (
 
 func LinkHosts(model *HostsModel, rootIp net.IP) {
 
-	WriteAll("[Linker] Linking hosts...")
+	WriteAll("[LINKER] Linking hosts...")
 
 	var rootHost = model.Get(rootIp)
 	if rootHost == nil {
@@ -17,9 +17,7 @@ func LinkHosts(model *HostsModel, rootIp net.IP) {
 
 	model.IndexHosts()
 
-	//hostsCount := model.HostsCount()
-
-	workers := uint32(1) //+ hostsCount/10
+	workers := uint32(1)
 	hostsChan := make(chan *Host, 256)
 	wg := &sync.WaitGroup{}
 

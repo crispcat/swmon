@@ -7,7 +7,7 @@ install:
 uninstall:
 	./make/make_uninstall.sh
 
-deploy: uninstall clean install
+clean-install: uninstall clean install
 
 release:
 	./make/make_release.sh

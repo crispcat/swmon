@@ -44,12 +44,14 @@ DESCRIPTION
 
 	MODES
 
-	-c 	    Use /usr/local/etc/swmon/ config. If config don't exists creates a new one. Mode. Not required.
+	-c 	    Use ` + CONFIG_PATH + ` config. If config don't exists creates a new one. Mode. Not required.
 
 	-k 	    Use swmon_hosts_model.json generated with previous scans to define targets. No scan will process.
                     Will retrive SNMP data only from hosts already found. -n will be ignored. Mode. Not required.
 
 	-f 	    Forget already found hosts if it become unreachable. Mode. Not required.
+
+	-v 	    Be verbose.
 
 	-h --help   Prints that.
 
@@ -74,6 +76,7 @@ var (
 	Help           bool
 	UseConfig      bool
 	OnlyKnownHosts bool
+	IsVerbose      bool
 )
 
 // Config are args set both from command line and config
@@ -81,24 +84,23 @@ var Config SwmonConfig
 
 // SwmonConfig are args set both from command line and config
 type SwmonConfig struct {
-	LogsPath          string             `yaml:"logs_path"`
-	Workers           uint               `yaml:"workers"`
-	RootAddr          string             `yaml:"root_addr"`
-	NagvisMap         string             `yaml:"nagvis_map"`
-	WwwUser           string             `yaml:"www_user"`
-	Networks          []SwmonNetworkArgs `yaml:"networks"`
-	ForgetHosts       bool               `yaml:"remove_unreachable_hosts"`
-	AutoRestartNagios bool               `yaml:"auto_restart_nagios"`
+	LogsPath        string             `yaml:"logs_path"`
+	Workers         uint               `yaml:"workers"`
+	RootAddr        string             `yaml:"root_addr"`
+	NagvisMap       string             `yaml:"nagvis_map"`
+	WwwUser         string             `yaml:"www_user"`
+	Networks        []SwmonNetworkArgs `yaml:"networks"`
+	ForgetHosts     bool               `yaml:"remove_unreachable_hosts"`
+	PostExecCommand string             `yaml:"post_execution_command"`
 }
 
 // SwmonNetworkArgs are args situable for every separate network block
 type SwmonNetworkArgs struct {
 	AddrBlocks          string `yaml:"addr_blocks"`
-	SnmpCommunityString string `yaml:"snmp_v1_v2c_community_string"`
+	SnmpCommunityString string `yaml:"snmp_community_string"`
 	SnmpPort            uint16 `yaml:"snmp_port"`
 	SnmpVersion         uint8  `yaml:"snmp_version"`
 	SnmpTimeout         uint64 `yaml:"snmp_timeout"`
-	MsgFlags            string `yaml:"snmp_v3_msg_flags"`
 }
 
 func main() {
@@ -139,11 +141,12 @@ func main() {
 	timeElapsed := time.Since(startTime)
 	WriteAll("Swmon execution done in %s for %s unique addresses.", timeElapsed, addressesCount)
 
-	if Config.AutoRestartNagios {
-		RestartNagios()
-		Stdout("Map avaliable on http://localhost/nagvis/frontend/nagvis-js/index.php?mod=Map&act=view&show=%s",
-			strings.Split(filepath.Base(Config.NagvisMap), ".")[0])
+	if Config.PostExecCommand != "" {
+		PostExecCommand()
 	}
+
+	WriteAll("Map avaliable on http://localhost/nagvis/frontend/nagvis-js/index.php?mod=Map&act=view&show=%s",
+		strings.Split(filepath.Base(Config.NagvisMap), ".")[0])
 
 	DoneLogs()
 }
@@ -155,7 +158,7 @@ func ParseArgsAndConfig() {
 	flag.BoolVar(&Help, "help", false, "Prints that.")
 	flag.BoolVar(&Help, "h", false, "Prints that.")
 	flag.BoolVar(&UseConfig, "c", false, "Path to config file. Default config is near the binary with name swmon_config.")
-	//flag.BoolVar(&Config.AutoRestartNagios, "a", false, "Auto restart Nagios process when done.")
+	//flag.StringVar(&Config.PostExecCommand, "p", false, "Auto restart Nagios process when done.")
 	flag.StringVar(&comandLineNetworkArgs.AddrBlocks, "n", "", "Network blocks in CIDR format (192.0.0.1/16). Comma separated. Required.")
 	flag.StringVar(&Config.RootAddr, "r", "", "Root addresses from where fun begins. Must be in provided netblock. Required.")
 	flag.UintVar(&Config.Workers, "w", 0, "Number of parralel workers.")
@@ -164,6 +167,7 @@ func ParseArgsAndConfig() {
 	flag.StringVar(&comandLineNetworkArgs.SnmpCommunityString, "s", SNMP_COMMUNITY, "SNMP Community string. Default is \"public\".")
 	flag.StringVar(&Config.NagvisMap, "m", "", "Path to the NagVis map. Use it to gracefully update your existing NagVis map.")
 	flag.BoolVar(&Config.ForgetHosts, "f", false, "Forget already finded host if it become unreachable.")
+	flag.BoolVar(&IsVerbose, "v", false, "Be verbose.")
 	flag.Parse()
 
 	if Help {
@@ -232,6 +236,8 @@ func ScanNetwork() (*HostsModel, *big.Int) {
 	hostsModel := CreateHostsModel()
 	knownHosts, err := ReadHostsModel()
 	if err != nil {
+		WriteAll("Unable to read model file %s: %s", HOSTS_MODEL_FILE, err)
+	} else {
 		hostsModel.Import(knownHosts)
 	}
 
@@ -240,6 +246,7 @@ func ScanNetwork() (*HostsModel, *big.Int) {
 		go NetWorker(taskQueue, hostsModel)
 	}
 
+	WriteAll("Sending ICMP...")
 	for _, network := range networks {
 		WalkAddressBlock(network, taskQueue)
 	}
@@ -378,13 +385,13 @@ func WalkAddressBlock(network *SwmonNetwork, taskQueue *NetTaskQueue) {
 	}
 }
 
-func RestartNagios() {
+func PostExecCommand() {
 
-	err := exec.Command("/bin/sh", "-c", "sudo systemctl restart nagios.service").Run()
+	err := exec.Command("/bin/sh", "-c", Config.PostExecCommand).Run()
 	if err != nil {
-		WriteAll("Unable to restart Nagios service: %s", err)
+		WriteAll("Unable to do post execution: %s", err)
 	} else {
-		WriteAll("Nagios service restarted!")
+		WriteAll("Post execution succeed!")
 	}
 }
 

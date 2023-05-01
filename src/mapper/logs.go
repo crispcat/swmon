@@ -24,6 +24,12 @@ func Stdout(format string, v ...any) {
 	fmt.Printf(format+"\n", v...)
 }
 
+func Verbose(format string, v ...any) {
+	if IsVerbose {
+		WriteAll(format+"\n", v...)
+	}
+}
+
 var LogsFile *os.File
 
 func DoLogs(path string) error {

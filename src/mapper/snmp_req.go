@@ -123,7 +123,7 @@ func ParseBytes(value interface{}, assumeLenght ...int) string {
 
 func (req *SnmpRequest) LogSnmpResult() {
 
-	WriteAll("[%s] SNMP GET [%s][%s]. Response:[TYPE:%s][BYTES:%s] --> %s (method=%s) \n",
+	Verbose("[%s] SNMP GET [%s][%s]. Response:[TYPE:%s][BYTES:%s] --> %s (method=%s) \n",
 		req.host.Ip,
 		req.name,
 		req.oid,
@@ -165,7 +165,7 @@ func AssumePortNumberOnPos(req *SnmpRequest, oid []string, pos int) (uint32, boo
 	}
 
 	if portNumber > req.host.IfsCount {
-		WriteAll("[%s] SNMP GET [%s][%s] OID POS %d IS NOT A VALID PORT NUMBER! MAYBE AN INTERNAL INTERFACE",
+		Verbose("[%s] SNMP GET [%s][%s] OID POS %d IS NOT A VALID PORT NUMBER! MAYBE AN INTERNAL INTERFACE",
 			req.host.Ip, req.name, req.oid, pos)
 		// resume anyway
 	}

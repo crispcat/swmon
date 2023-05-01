@@ -11,7 +11,7 @@ import (
 func Ping(task *NetTask, queue *NetTaskQueue, hostsModel *HostsModel) {
 
 	defer queue.DoneOne()
-	Stdout("[%s] Send ping...", task.ip)
+	Verbose("[%s] Send ping...", task.ip)
 
 	pinger, err := ping.NewPinger("127.0.0.1") // use dummy address to pass check
 	if err != nil {

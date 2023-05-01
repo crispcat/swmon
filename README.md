@@ -65,7 +65,7 @@ Program files copied to `/usr/local/etc/swmon`
 ## Usage
 
 ### Setup
-First, you need to create a default swmon config
+First, you need to create a default config
 
 ```
  # sudo swmon_mapper -c
@@ -85,6 +85,7 @@ networks:
       snmp_version: 2
       snmp_timeout: 15000
 remove_unreachable_hosts: false
+post_execution_command: sudo systemctl restart nagios
 ```
 
 It is a bunch of settings. But required are `root_addr` and `nagvis_map` with at
@@ -110,6 +111,7 @@ networks: # can be a bunch
       snmp_timeout: 15000
       
 remove_unreachable_hosts: false # make sense while updating existing files
+post_execution_command: sudo systemctl restart nagios
 ```
 
 You can use command line instead:
@@ -122,7 +124,7 @@ sudo swmon_mapper --help
 ### First run
 
 ```bash
-sudo swmon_mapper -c 
+sudo swmon_mapper -c -v
 ```
 ```
 Testing LLDP MIBs persistence...
@@ -173,7 +175,7 @@ You will see generated Nagios config `swmon_nagios_hosts.cfg`.
 Include it to your Nagios config.
 ```
 sudo bash -c "echo "cfg_file=$(realpath swmon_nagios_hosts.cfg)" >> /usr/local/nagios/etc/nagios.cfg"
-sudo systemctl restart nagios.service
+sudo systemctl restart nagios
 ```
 
 Follow the link at the end of swmon output. All host will be located in top 
@@ -324,15 +326,11 @@ monitor whatever protocol you want.
 
 ## Some usage tips
 
- - **Make an "alias" for swmon to restart Nagios after scans.**
-```
-sudo bash -c "echo 'sudo swmon_mapper "$*" && sudo systemctl restart nagios' > /usr/local/bin/swmon" && sudo chmod +x /usr/local/bin/swmon
-```
  - **[Set](https://support.nagios.com/forum/viewtopic.php?f=7&t=60813) Nagios `interval_length` to `1` for "realtime" monitoring.**
  - **Swmon will not entirely rewrite your map. Swmon will not delete any host already on the map. 
 If the map exists it will only add some new hosts found and update data for the old hosts (links etc).
 So, you can safely customize you map and then run swmon scans. Use -f flag if you want to delete old hosts will
-not found in upcoming scan.**
+not find in upcoming scan.**
 
 ## Licence
 
