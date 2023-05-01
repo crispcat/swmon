@@ -4,8 +4,8 @@
 ![img.png](img_1.png)
 
 ## How It Works:
-Swmon scans network blocks with ping. All hosts responded will be probed with SNMP checks. Swmon will try to gather
-system information, LLDP connectivity, and STP port statuses. Then, it will try to "connect all the ends" and build a logical topology of the network.
+Swmon scans network blocks with ping. Then, only responded hosts with several SNMP checks. Swmon will try to gather
+system information, LLDP connectivity, and STP port statuses. Finally, it will try to "connect all the ends" and build a logical topology of the network.
 
 ### Output format:
 As a result of the scan swmon will generate these files:
