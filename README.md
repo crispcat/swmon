@@ -1,29 +1,24 @@
 # SWMON
-### Simple autodiscovering L2 network mapper.
+### Simple autodiscovering LLDP network mapper for Nagios and Nagvis with STP monitoring support
 
 ![img.png](img_1.png)
 
-## How It Works:
-Swmon scans network blocks with ping. Then, only responded hosts with several SNMP checks. Swmon will try to gather
-system information, LLDP connectivity, and STP port statuses. Finally, it will try to "connect all the ends" and build a logical topology of the network.
+## How It Works
+Swmon scans network blocks with ping. Then, try to gather system information, LLDP connectivity, and STP port statuses from alive hosts via SNMP. Finally, it work to "connect all the ends" and build a logical topology of the network.
 
-### Output format:
-As a result of the scan swmon will generate these files:
+### Output
+As a result of the scan swmon will generate three files:
 - `swmon_nagios_hosts.cfg` - [Nagios](https://github.com/NagiosEnterprises/nagioscore)
   config filled with hosts, child/parent relations, and services to monitor the network.
   You can configure Nagios to include this.
-- Unfortunately, bare-bones Nagios do not provide many configurations to draw
-  fancy maps. The second .cfg swmon will generate is [Nagvis](https://github.com/NagVis/nagvis)
-  static map definition. The file name and path are configurable.
-- `swmon_hosts_model.json` - including all SNMP vars swmon gathered.
+- [Nagvis](https://github.com/NagVis/nagvis) static map config written to path you decide.
+- `swmon_hosts_model.json` - state of the network during last scan.
 
+There are nothing else. No straight dependencies. It's not a deamon. Swmon just runs and generate three config files.   
 
-You can use [Nagvis](https://github.com/NagVis/nagvis) + [Nagios](https://github.com/NagiosEnterprises/nagioscore) +
-[Backend](http://docs.nagvis.org/1.9/en_US/backends.html)([ndoutils](https://github.com/NagiosEnterprises/ndoutils)),
-as I do, to render the map and monitor scanned networks, but you are welcome to use other software you find compatible.
+All futher monitoring on Nagios behalf.
 
-
-### Network devices requirements:
+### Network devices requirements
 
 - SNMPv2 enabled on the devices (SNMPv3 is not supported yet)
 - Known community string
@@ -31,12 +26,16 @@ as I do, to render the map and monitor scanned networks, but you are welcome to 
 - LLDP data available by SNMP
 - STP data available by SNMP
 
-### "Front-End":
+### What I need to see it?
 
 - [Nagios](https://github.com/NagiosEnterprises/nagioscore)
 - [Nagios Plugins](https://github.com/nagios-plugins/nagios-plugins)
-- [Nagvis*](https://github.com/NagVis/nagvis), version > 1.9.34 if you want to use MySQL 8.* (you can install it from my submodule in /deps. I fixed some minor MySQL 8.* incompatibility)
-- Some [Nagvis backend](http://docs.nagvis.org/1.9/en_US/backends.html) - I use [ndoutils](https://github.com/NagiosEnterprises/ndoutils) + MySQL 8.* database to collect Nagios data
+- [Nagvis*](https://github.com/NagVis/nagvis)
+- Some [Nagvis backend](http://docs.nagvis.org/1.9/en_US/backends.html)   
+
+I use [ndoutils](https://github.com/NagiosEnterprises/ndoutils) + MySQL 8.* as Nagvis backend to monitor swmon generated topologies, but you free to use something else.
+
+*Use version > 1.9.34 if you want to use ndoutils + MySQL 8.* (you can install it from my submodule in /deps. I fixed some minor MySQL 8.* incompatibility)
 
 ## Installation
 
@@ -84,16 +83,16 @@ remove_unreachable_hosts: false
 post_execution_command: sudo systemctl restart nagios
 ```
 
-It is a bunch of settings. But required are `root_addr` and `nagvis_map` with at
-least one network block. Config explained:
+It is a bit of settings. But required are `root_addr` and `nagvis_map` with at
+least one network block. See detailed config below.
 
 ```yaml
 logs_path: /usr/local/etc/swmon/swmon_log
-workers: 0 # is auto
+workers: 0 # is auto, see --help for more details
 root_addr: "192.168.14.1" # will have no parents and be the N-gen parent for all other hosts
-nagvis_map: /usr/local/nagvis/etc/maps/swmon-static.cfg # nagvis map will be created or updated
+nagvis_map: /usr/local/nagvis/etc/maps/swmon-static.cfg # nagvis map will created or updated
 www_user: www-data # your www data user
-networks: # can be a bunch
+networks: # can be a few
    - addr_blocks: "192.168.14.0/22,192.168.10.0/24" # CIDR format only
      snmp_community_string: somecomstring
      snmp_port: 161
@@ -106,7 +105,7 @@ networks: # can be a bunch
      snmp_version: 2
      snmp_timeout: 15000
 
-remove_unreachable_hosts: false # make sense while updating existing files
+remove_unreachable_hosts: false # make sense while updating existing maps
 post_execution_command: sudo systemctl restart nagios
 ```
 
@@ -119,8 +118,10 @@ sudo swmon_mapper --help
 
 ### First run
 
+When configured.
+
 ```bash
-sudo swmon_mapper -c -v
+sudo swmon_mapper -c
 ```
 ```
 Testing LLDP MIBs persistence...
@@ -144,7 +145,7 @@ Swmon full scan started for blocks 192.168.14.0/22,192.168.10.0/24,172.17.22.0/2
 ...
 ```
 You will see a lot of output.  
-But interesting in the last lines
+But interesting things are in the last lines
 
 ```
 ...
@@ -167,21 +168,21 @@ drwxr-xr-x 3 root root    4096 mibs/
 -rw-r--r-- 1 root root   14537 swmon_nagios_hosts.cfg
 ```
 
-You will see generated Nagios config `swmon_nagios_hosts.cfg`.  
+You will see Nagios config `swmon_nagios_hosts.cfg`.  
 Include it to your Nagios config.
 ```
 sudo bash -c "echo "cfg_file=$(realpath swmon_nagios_hosts.cfg)" >> /usr/local/nagios/etc/nagios.cfg"
 sudo systemctl restart nagios
 ```
 
-Follow the link at the end of swmon output. All hosts will be located in top the
+Follow the link at the end of swmon output. All hosts will be located same coordinates in top the
 left corner. Click Edit Map -> Lock/Unlock All and drag it as you want.
 
 Don't worry about orange "UNKNOWN" services we will fix it soon.
 
 ## STP Monitoring
 
-After the first scan you will end with the map with orange connections telling us that the status of the services is
+After the first scan, you will end with orange connections telling us that the status of the services is
 **'UNKNOWN'**.
 
 ![img_3.png](img_3.png)
@@ -201,9 +202,9 @@ You need to edit `/usr/local/etc/swmon/mibs/oids/stp_dev_oids.yaml`.
   value_map: mstp_statuses
 ```
 
-It's my MSTP monitoring setup I made for the test network (4 DLink switches). Two of them supports
+It's MSTP monitoring setup I made for the test network (4 DLink switches). Two of them supports
 [MSTP-MIB](http://www.circitor.fr/Mibs/Html/M/MSTP-MIB.php) and the`MSTP-MIB::swMSTPMstPortStatus`
-is the root oid for port statuses.
+is the root OID for port statuses.
 
 You can use the already shipped tool `stp_mib_scanner` to parse STP module from the device `sysORtable`
 
@@ -222,12 +223,11 @@ STP module OID .1.3.6.1.4.1.171.12.15 from device table is valid OID
 ROOT STP OID IS: .1.3.6.1.4.1.171.12.15
 Press ENTER to list module values...
 ```
-Now, you can use module OID to search for the MIB module. I use [oidref](https://oidref.com/).
+Now, you can use OID to search for the MIB module. I use [oidref](https://oidref.com/).
 
 ![img.png](img.png)
 
-Download the needed MIB, place it in `/usr/local/etc/swmon/mibs` directory, and name
-it as the module name in device oid.
+Download the MIB, place it in `/usr/local/etc/swmon/mibs` directory, and name as the module name in the device `sysORtable`.
 ```
 sudo mv ~/Downloads/dlkMSTP.mib /usr/local/etc/swmon/mibs/swMSTPMIB.mib
 stp_mib_scanner -c somecomstr -h 192.14.1.18 -w
@@ -254,14 +254,14 @@ MSTP-MIB::swMSTPMstPortStatus.25.0 = INTEGER: disabled(2)
 MSTP-MIB::swMSTPMstPortStatus.26.0 = INTEGER: disabled(2)
 ...
 ```
-Add port status root `MSTP-MIB::swMSTPMstPortStatus` to you config.
-I matched all device models with this oid.
+Add `MSTP-MIB::swMSTPMstPortStatus` to you config.
+I matched all device models with that OID.
 ```
 - device_match_regex: .*
   target_oid: MSTP-MIB::swMSTPMstPortStatus
 ```
 
-### If there are no suitable MIB modules you can target raw OID. For example:
+### If there are no suitable MIB modules you can targeting raw OID. For example:
 ```
 Device name: DGS-1210-52/ME
 Device description: DGS-1210-52/ME/A1
@@ -274,7 +274,7 @@ ROOT STP OID IS: .1.3.6.1.4.1.171.10.76.29.1.6
 Press ENTER to list module values...
 ```
 There are no public record for oid .1.3.6.1.4.1.171.10.76.29.1.6  
-List values and try to find port statuses somewhere in the device database.
+List values and try to find port statuses somewhere in the module.
 ```
 ...
 DLINK-ID-REC-MIB::dlink-products.76.29.1.6.2.1.12.44 = INTEGER: 1
@@ -298,7 +298,8 @@ mstp_statuses:
     7: "Unknown: no-stp-enabled(7)"
     8: "Critical: err-disabled(8)"
 ```
-Oid `DLINK-ID-REC-MIB::dlink-products.76.29.1.6.2.1.12` looks like the best candidate.
+Yes, 1 stands for "other", but anyway
+OID `DLINK-ID-REC-MIB::dlink-products.76.29.1.6.2.1.12` looks like the best candidate.
 
 Add it to the config
 ```
@@ -325,8 +326,8 @@ monitor whatever protocol you want.
 
 - **[Set](https://support.nagios.com/forum/viewtopic.php?f=7&t=60813) Nagios `interval_length` to `1` for "realtime" monitoring.**
 - **Swmon will not entirely rewrite your map. Swmon will not delete any host already on the map.
-  If the map exists it will only add some new hosts found and update data for the old hosts (links etc).
-  So, you can safely customize your map and then run swmon scans. Use -f flag if you want to delete old hosts that will not find in an upcoming scan.**
+  If the map exists it will only add new hosts found, and update data for the old hosts (links etc).
+  So, you can safely customize map and then run swmon scans. Use -f flag if you want to delete some old hosts not presented in the network anymore.**
 - **Contact me if you run into some issues. I don't have access to any big enough network to test all possible cases.**
 
 ## Licence
@@ -335,4 +336,4 @@ This is free software under GNU GENERAL PUBLIC LICENSE. See LICENCE for more det
 
 ## Thanks
 
-Big thanks to the developers of [GoSNMP](https://github.com/gosnmp/gosnmp) library.
+Big thanks to the developers of [GoSNMP](https://github.com/gosnmp/gosnmp) library for such a relief.
