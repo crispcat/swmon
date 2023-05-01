@@ -9,7 +9,7 @@ Swmon scans network blocks with ping. Then, try to gather system information and
 ### Output
 As a result of the scan swmon will generate three files:
 - `swmon_nagios_hosts.cfg` - [Nagios](https://github.com/NagiosEnterprises/nagioscore)
-  config filled with hosts, child/parent relations, and services to monitor the network.
+  config with hosts, child/parent relations, and services to monitor the network.
   You can configure Nagios to include this.
 - [Nagvis](https://github.com/NagVis/nagvis) static map config written to path you decide.
 - `swmon_hosts_model.json` - state of the network during last scan.
