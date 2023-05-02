@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+VERSION="0.0.1"
+
 ROOT_DIR=$(realpath "${0%/*}/..")
 
 rm -rf "$ROOT_DIR"/release
@@ -17,19 +19,15 @@ do
     GOARCH=${PLATFORM_SPLIT[1]}
 
     RELEASE_DIR="$ROOT_DIR"/release
-
-    if [ ! -d "$RELEASE_DIR"/"${PLATFORM_SPLIT[0]}"/ ];
-    then
-          mkdir "$RELEASE_DIR"/"${PLATFORM_SPLIT[0]}"/
-          mkdir "$RELEASE_DIR"/"${PLATFORM_SPLIT[0]}"/"${PLATFORM_SPLIT[1]}"
-    fi
-
-    if [ ! -d "$RELEASE_DIR"/"${PLATFORM_SPLIT[0]}"/"${PLATFORM_SPLIT[1]}" ];
-    then
-          mkdir "$RELEASE_DIR"/"${PLATFORM_SPLIT[0]}"/"${PLATFORM_SPLIT[1]}"
-    fi
+    mkdir "$RELEASE_DIR"/"${PLATFORM_SPLIT[0]}"/
+    mkdir "$RELEASE_DIR"/"${PLATFORM_SPLIT[0]}"/"${PLATFORM_SPLIT[1]}"
+    mkdir "$RELEASE_DIR"/"${PLATFORM_SPLIT[0]}"/"${PLATFORM_SPLIT[1]}"/swmon
 
     env GOOS="$GOOS" GOARCH="$GOARCH"
-    build_modules  "$ROOT_DIR" "$RELEASE_DIR"/"$PLATFORM"
-    copy_resources "$ROOT_DIR" "$RELEASE_DIR"/"$PLATFORM"
+    build_modules  "$ROOT_DIR" "$RELEASE_DIR"/"$PLATFORM"/swmon/
+    copy_resources "$ROOT_DIR" "$RELEASE_DIR"/"$PLATFORM"/swmon/
+
+    (cd "$RELEASE_DIR"/"$PLATFORM" || exit 1
+    tar -czvf "swmon_${PLATFORM_SPLIT[0]}_${PLATFORM_SPLIT[1]}_$VERSION.tar.gz" ./swmon
+    mv "swmon_${PLATFORM_SPLIT[0]}_${PLATFORM_SPLIT[1]}_$VERSION.tar.gz"  "$ROOT_DIR"/release/)
 done
