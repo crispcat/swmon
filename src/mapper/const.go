@@ -9,14 +9,14 @@ import (
 //-----------------------------------------CONFIG---------------------------------------------------------------------//
 
 var NEW_CONFIG = SwmonConfig{
-	LogsPath:        LOG_FILE,
-	Workers:         0,
-	RootAddr:        "",
-	WwwUser:         "www-data",
-	NagvisMap:       "/usr/local/nagvis/etc/maps/swmon-static.cfg",
-	Networks:        []SwmonNetworkArgs{DEFAULT_NETWORK_ARGS},
-	ForgetHosts:     false,
-	PostExecCommand: "sudo systemctl restart nagios",
+	LogsPath:          LOG_FILE,
+	Workers:           0,
+	RootAddr:          "",
+	WwwUser:           "www-data",
+	NagvisMap:         "/usr/local/nagvis/etc/maps/swmon-static.cfg",
+	Networks:          []SwmonNetworkArgs{DEFAULT_NETWORK_ARGS},
+	ForgetUnreachable: false,
+	PostExecCommand:   "sudo systemctl restart nagios",
 }
 
 var DEFAULT_NETWORK_ARGS = SwmonNetworkArgs{
@@ -35,7 +35,7 @@ const SNMP_COMMUNITY = "public"
 
 //--------------------------------------------FILES-------------------------------------------------------------------//
 
-const CONFIG_PATH = shared.ETC + "swmon_config.yaml"
+const DEFAULT_CONFIG_PATH = shared.ETC + "swmon_config.yaml"
 
 const OS_DIR_PERMISSIONS = 0755
 const OS_FILE_PERMISSIONS_STRICT = 0660

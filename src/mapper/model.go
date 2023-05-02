@@ -15,8 +15,70 @@ type HostsModel struct {
 	Index HostsIndex
 }
 
-func CreateHostsModel() *HostsModel {
+type Host struct {
+	Id            uint32
+	Ip            net.IP
+	Name          string
+	Description   string
+	WriteToConfig bool
+	IfsCount      uint32
+	Interfaces    map[uint32]*Interface
+	LldpPorts     map[uint32]*LocalLldpPort
+	Oids          map[string]string
+	Parents       []string
+	LinksDescr    map[string]bool
+	NetworkArgs   SwmonNetworkArgs
+	MapId         string
+}
 
+type Interface struct {
+	SubOid      uint32
+	Index       string
+	Descr       string
+	MAC         string
+	Operational bool
+
+	owner *Host
+}
+
+type LocalLldpPort struct {
+	SubOid      uint32
+	Id          string
+	RemotePorts map[uint32]*RemoteLldpPort
+}
+
+type RemoteLldpPort struct {
+	SubOid    uint32
+	Id        string
+	Desc      string
+	ChassisId string
+	SysName   string
+	SysDescr  string
+	OwnerIp   net.IP
+
+	owner *Host
+}
+
+type Connection struct {
+	from   uint32
+	frPort uint32
+	to     uint32
+	toPort uint32
+	done   bool
+}
+
+type HostsIndex map[string]HostOwnable
+
+type HostOwnable interface {
+	GetOwner() *Host
+}
+
+type HostNameIndex struct {
+	Name  string
+	owner *Host
+}
+
+func CreateHostsModel() *HostsModel {
 	return &HostsModel{Map: sync.Map{}, Conn: sync.Map{}, Index: HostsIndex{}}
 }
 
@@ -52,14 +114,6 @@ func (hostsModel *HostsModel) Delete(ip net.IP) {
 
 	id := binary.BigEndian.Uint32(ip)
 	hostsModel.Map.Delete(id)
-}
-
-type Connection struct {
-	from   uint32
-	frPort uint32
-	to     uint32
-	toPort uint32
-	done   bool
 }
 
 func (hostsModel *HostsModel) ConnectionGet(from *Host, to *Host) (Connection, bool) {
@@ -126,29 +180,35 @@ func (hostsModel *HostsModel) Import(hostsMap map[uint32]*Host) {
 		host.OnDeserialize()
 		hostsModel.Map.Store(id, host)
 	}
+
+	hostsModel.Map.Range(func(_, value any) bool {
+		host := value.(*Host)
+		for _, locLldpPort := range host.LldpPorts {
+			for _, remLldpPort := range locLldpPort.RemotePorts {
+				if len(remLldpPort.OwnerIp) == 0 {
+					continue
+				}
+				remLldpPort.OwnerIp = remLldpPort.OwnerIp[len(host.Ip)-4:]
+				remLldpPort.owner = hostsModel.Get(remLldpPort.OwnerIp)
+			}
+		}
+		return true
+	})
 }
 
-type Host struct {
-	Id            uint32
-	Ip            net.IP
-	Name          string
-	Description   string
-	WriteToConfig bool
-	IfsCount      uint32
-	Interfaces    map[uint32]*Interface
-	LldpPorts     map[uint32]*LocalLldpPort
-	Oids          map[string]string
-	Parents       []string
-	LinksDescr    map[string]bool
-	NetworkArgs   SwmonNetworkArgs
-	MapId         string
-}
-
-func (host *Host) ClearLastScanData() {
-
+func (host *Host) ClearInterfaces() {
 	host.Interfaces = map[uint32]*Interface{}
+}
+
+func (host *Host) ClearLldp() {
 	host.LldpPorts = map[uint32]*LocalLldpPort{}
+}
+
+func (host *Host) ClearParents() {
 	host.Parents = []string{}
+}
+
+func (host *Host) ClearLinkDescriptions() {
 	host.LinksDescr = map[string]bool{}
 }
 
@@ -156,50 +216,12 @@ func (host *Host) String() string {
 	return fmt.Sprintf("[%s]:[%s]:[%s]", host.Ip, host.Name, host.Description)
 }
 
-type HostOwnable interface {
-	GetOwner() *Host
-}
-
-type HostNameIndex struct {
-	Name  string
-	owner *Host
-}
-
-type HostsIndex map[string]HostOwnable
-
-type Interface struct {
-	SubOid      uint32
-	Index       string
-	Descr       string
-	MAC         string
-	Operational bool
-
-	owner *Host
-}
-
 func (ifs *Interface) String() string {
 	return fmt.Sprintf("[%d]:[%s]:[%s]:[%t]", ifs.SubOid, ifs.Index, ifs.MAC, ifs.Operational)
 }
 
-type LocalLldpPort struct {
-	SubOid      uint32
-	Id          string
-	RemotePorts map[uint32]*RemoteLldpPort
-}
-
 func (llp *LocalLldpPort) String() string {
 	return fmt.Sprintf("[%d]:[%s]", llp.SubOid, llp.Id)
-}
-
-type RemoteLldpPort struct {
-	SubOid    uint32
-	Id        string
-	Desc      string
-	ChassisId string
-	SysName   string
-	SysDescr  string
-
-	owner *Host
 }
 
 func (rlp *RemoteLldpPort) String() string {
@@ -288,8 +310,6 @@ func (host *Host) OnDeserialize() {
 	for _, ifs := range host.Interfaces {
 		ifs.owner = host
 	}
-
-	host.ClearLastScanData()
 }
 
 func (host *Host) DefaultFormatter(fieldName string) string {

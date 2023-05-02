@@ -8,90 +8,31 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
-	shared "swmon_shared"
 	"time"
 )
 
-const ETC_PATH = shared.ETC
-
-const MAN = `
-SWMON_MAPPER
-
-NAME
-swmon_mapper OPTION... [OPTION...]
-
-DESCRIPTION
-
-	L2 network topology mapper. Run with root privs.
-
-	REQUIRED
-
-	-n	    Network blocks in CIDR format (192.0.0.1/16). Comma separated.
-
-	-r 	    Root addresses from where fun begins. Comma separated. Must be in provided netblocks.
-
-	-m 	    Path to the NagVis map. Use it to create or update existing NagVis map.
-
-	NOT REQUIRED
-
-	-w 	    Number of parralel workers. Big number increase speed but network stability may lay down due to packet loss.
-                    Recomended 500-2000. If your network range is less, set workers count accordingly to your addresses range. 
-                    If not provided, this is default befaviour.
-
-	-s 	    SNMP Community string. Default is "public".
-
-	-l 	    Path to logs file. Default logs is swmon_log in ` + ETC_PATH + ` .
-
-	MODES
-
-	-c 	    Use ` + CONFIG_PATH + ` config. If config don't exists creates a new one. Mode. Not required.
-
-	-k 	    Use swmon_hosts_model.json generated with previous scans to define targets. No scan will process.
-                    Will retrive SNMP data only from hosts already found. -n will be ignored. Mode. Not required.
-
-	-f 	    Forget already found hosts if it become unreachable. Mode. Not required.
-
-	-v 	    Be verbose.
-
-	-h --help   Prints that.
-
-EXAMPLE
-
-	Use -c to create default config
-      > sudo swmon_mapper -c
-
-	Run with default config
-      > sudo swmon_mapper -c
-
-	Process full scan of the subnet with exac 200 workers:
-      > sudo swmon_mapper -n 192.168.225.0/24 -s somecomstr -r 192.168.225.201 -w 200
-
-	Remap already found hosts from root and remove unreachable hosts:
-      > sudo swmon_mapper -r 192.168.225.33 -k -f
-
-`
-
 // There are command line options only
 var (
-	Help           bool
-	UseConfig      bool
-	OnlyKnownHosts bool
-	IsVerbose      bool
+	Help             bool
+	UseDefaultConfig bool
+	OnlyKnownHosts   bool
+	IsVerbose        bool
+	ConfigPath       string
+	ForgetAllHosts   bool
 )
 
-// Config are args set both from command line and config
+// Config are args both from command line and config
 var Config SwmonConfig
 
-// SwmonConfig are args set both from command line and config
 type SwmonConfig struct {
-	LogsPath        string             `yaml:"logs_path"`
-	Workers         uint               `yaml:"workers"`
-	RootAddr        string             `yaml:"root_addr"`
-	NagvisMap       string             `yaml:"nagvis_map"`
-	WwwUser         string             `yaml:"www_user"`
-	Networks        []SwmonNetworkArgs `yaml:"networks"`
-	ForgetHosts     bool               `yaml:"remove_unreachable_hosts"`
-	PostExecCommand string             `yaml:"post_execution_command"`
+	LogsPath          string             `yaml:"logs_path"`
+	Workers           uint               `yaml:"workers"`
+	RootAddr          string             `yaml:"root_addr"`
+	NagvisMap         string             `yaml:"nagvis_map"`
+	WwwUser           string             `yaml:"www_user"`
+	Networks          []SwmonNetworkArgs `yaml:"networks"`
+	ForgetUnreachable bool               `yaml:"remove_unreachable_hosts"`
+	PostExecCommand   string             `yaml:"post_execution_command"`
 }
 
 // SwmonNetworkArgs are args situable for every separate network block
@@ -155,19 +96,20 @@ func ParseArgsAndConfig() {
 
 	comandLineNetworkArgs := DEFAULT_NETWORK_ARGS
 
-	flag.BoolVar(&Help, "help", false, "Prints that.")
-	flag.BoolVar(&Help, "h", false, "Prints that.")
-	flag.BoolVar(&UseConfig, "c", false, "Path to config file. Default config is near the binary with name swmon_config.")
-	//flag.StringVar(&Config.PostExecCommand, "p", false, "Auto restart Nagios process when done.")
-	flag.StringVar(&comandLineNetworkArgs.AddrBlocks, "n", "", "Network blocks in CIDR format (192.0.0.1/16). Comma separated. Required.")
-	flag.StringVar(&Config.RootAddr, "r", "", "Root addresses from where fun begins. Must be in provided netblock. Required.")
-	flag.UintVar(&Config.Workers, "w", 0, "Number of parralel workers.")
-	flag.StringVar(&Config.LogsPath, "l", LOG_FILE, "Path to logs file. Default logs is here with name swmon_log. Not required.")
-	flag.BoolVar(&OnlyKnownHosts, "k", false, "Use swmon_hosts_model.json generated with previous scans to define targets. No network scan will process, only known hosts instead.")
-	flag.StringVar(&comandLineNetworkArgs.SnmpCommunityString, "s", SNMP_COMMUNITY, "SNMP Community string. Default is \"public\".")
-	flag.StringVar(&Config.NagvisMap, "m", "", "Path to the NagVis map. Use it to gracefully update your existing NagVis map.")
-	flag.BoolVar(&Config.ForgetHosts, "f", false, "Forget already finded host if it become unreachable.")
-	flag.BoolVar(&IsVerbose, "v", false, "Be verbose.")
+	flag.BoolVar(&Help, "help", false, H_DESCR)
+	flag.BoolVar(&Help, "h", false, H_DESCR)
+	flag.BoolVar(&UseDefaultConfig, "c", false, C_DESCR)
+	flag.StringVar(&ConfigPath, "conf", "", CONF_DESCR)
+	flag.StringVar(&comandLineNetworkArgs.AddrBlocks, "n", "", N_DESCR)
+	flag.StringVar(&Config.RootAddr, "r", "", R_DESCR)
+	flag.UintVar(&Config.Workers, "w", 0, W_DESCR)
+	flag.StringVar(&Config.LogsPath, "l", LOG_FILE, L_DESCR)
+	flag.BoolVar(&OnlyKnownHosts, "k", false, K_DESCR)
+	flag.StringVar(&comandLineNetworkArgs.SnmpCommunityString, "s", SNMP_COMMUNITY, S_DESCR)
+	flag.StringVar(&Config.NagvisMap, "m", "", M_DESCR)
+	flag.BoolVar(&Config.ForgetUnreachable, "f", false, F_DESCR)
+	flag.BoolVar(&ForgetAllHosts, "ff", false, FF_DESCR)
+	flag.BoolVar(&IsVerbose, "v", false, V_DESCR)
 	flag.Parse()
 
 	if Help {
@@ -176,14 +118,21 @@ func ParseArgsAndConfig() {
 		os.Exit(0)
 	}
 
-	if UseConfig {
-		CreateDefaultConfigIfNExist()
-		Config = ParseConfig(CONFIG_PATH)
+	UseCustomConfig := ConfigPath != ""
+
+	if UseCustomConfig {
+		CreateConfigIfNExist(ConfigPath)
+		Config = ParseConfig(ConfigPath)
+
+	} else if UseDefaultConfig {
+		CreateConfigIfNExist(DEFAULT_CONFIG_PATH)
+		Config = ParseConfig(DEFAULT_CONFIG_PATH)
 	}
 
+	// give a priority to command line arguments
 	flag.Parse()
 
-	if !UseConfig {
+	if !UseDefaultConfig && !UseCustomConfig {
 		Config.Networks = []SwmonNetworkArgs{comandLineNetworkArgs}
 	}
 
@@ -235,7 +184,7 @@ func ScanNetwork() (*HostsModel, *big.Int) {
 
 	hostsModel := CreateHostsModel()
 	knownHosts, err := ReadHostsModel()
-	if err != nil {
+	if err != nil || ForgetAllHosts {
 		WriteAll("Unable to read model file %s: %s", HOSTS_MODEL_FILE, err)
 	} else {
 		hostsModel.Import(knownHosts)
@@ -264,7 +213,7 @@ func ScanKnownHosts() (*HostsModel, *big.Int) {
 	LoadMibs()
 
 	hosts, err := ReadHostsModel()
-	if err != nil {
+	if err != nil || ForgetAllHosts {
 		return ScanNetwork()
 	}
 

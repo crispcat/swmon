@@ -46,7 +46,7 @@ func Ping(task *NetTask, queue *NetTaskQueue, hostsModel *HostsModel) {
 		host.NetworkArgs = task.swargs
 		queue.Enqueue(NetTask{ip: task.ip, swargs: task.swargs, method: SNMP_SysNameDescr})
 
-	} else if host := hostsModel.Get(task.ip); Config.ForgetHosts && host != nil {
+	} else if host := hostsModel.Get(task.ip); Config.ForgetUnreachable && host != nil {
 		var output strings.Builder
 		output.WriteString(fmt.Sprintf("[%s] Unreachable!\n", task.ip))
 		output.WriteString(fmt.Sprintf("[%s] Will be deleted from map!\n", task.ip))

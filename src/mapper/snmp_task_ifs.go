@@ -14,6 +14,7 @@ func SNMP_Ifs(task *NetTask, queue *NetTaskQueue, hostsMap *HostsModel) {
 	WriteAll("[%s] Starting Interfaces probes...", task.ip)
 
 	host := hostsMap.GetOrCreate(task.ip)
+	host.ClearInterfaces()
 
 	// supress errors to retrieve all data we can
 

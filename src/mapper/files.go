@@ -37,15 +37,15 @@ func ParseConfig(path string) SwmonConfig {
 	return cfg
 }
 
-func CreateDefaultConfigIfNExist() {
+func CreateConfigIfNExist(configPath string) {
 
-	if _, err := os.Stat(CONFIG_PATH); errors.Is(err, os.ErrNotExist) {
+	if _, err := os.Stat(configPath); errors.Is(err, os.ErrNotExist) {
 		strd, _ := yaml.Marshal(NEW_CONFIG)
-		err = os.WriteFile(CONFIG_PATH, strd, os.FileMode(OS_FILE_PERMISSIONS_STRICT).Perm())
+		err = os.WriteFile(configPath, strd, os.FileMode(OS_FILE_PERMISSIONS_STRICT).Perm())
 		if err != nil {
-			WriteAll("Unable to create default config file %s: %s", CONFIG_PATH, err)
+			WriteAll("Unable to create config file %s: %s", configPath, err)
 		}
-		WriteAll("Default config created!")
+		WriteAll("Config created on path %s!", configPath)
 		DoneLogs()
 		os.Exit(0)
 	}

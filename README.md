@@ -66,8 +66,10 @@ First, you need to create a default config
 
 ```
  # sudo swmon_mapper -c
- Default config created!
+ Config created on path /usr/local/etc/swmon/swmon_config.yaml!
 ```
+
+**Use -conf instead of -c to specify exac config path*
 
 ```yaml
 logs_path: /usr/local/etc/swmon/swmon_log
@@ -115,7 +117,7 @@ Or use command line instead:
 
 ```bash
 sudo swmon_mapper -n 192.168.225.0/24 -s public -r 192.168.225.201 -w 256
-sudo swmon_mapper --help
+sudo swmon_mapper -help
 ```
 
 ### First run
@@ -125,6 +127,7 @@ When configured.
 ```bash
 sudo swmon_mapper -c
 ```
+**Use -conf instead of -c to specify exac config path*
 ```
 Testing LLDP MIBs persistence...
 LLDP-MIB::lldpLocPortId: 1.0.8802.1.1.2.1.3.7.1.3

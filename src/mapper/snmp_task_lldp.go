@@ -14,6 +14,7 @@ func SNMP_GetLLDP(task *NetTask, queue *NetTaskQueue, hostsMap *HostsModel) {
 	WriteAll("[%s] Starting LLDP probes...", task.ip)
 
 	host := hostsMap.GetOrCreate(task.ip)
+	host.ClearLldp()
 
 	// we will supress errors to retrieve all data we can
 

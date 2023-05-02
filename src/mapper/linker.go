@@ -36,6 +36,8 @@ func LinkWorker(model *HostsModel, hostsChan chan *Host, wg *sync.WaitGroup) {
 
 	for current := range hostsChan {
 
+		current.ClearLinkDescriptions()
+
 		for _, lldpPort := range current.LldpPorts {
 
 			if len(lldpPort.RemotePorts) == 0 {
@@ -86,8 +88,13 @@ func LinkWorker(model *HostsModel, hostsChan chan *Host, wg *sync.WaitGroup) {
 
 					conn := Connection{from: current.Id, to: host.Id, frPort: lldpPort.SubOid}
 					model.ConnectionSet(conn)
+
+					host.ClearParents()
 					host.AddParent(current)
+
 					remotePort.owner = host
+					remotePort.OwnerIp = host.Ip
+
 					hostsChan <- host
 					wg.Add(1)
 
