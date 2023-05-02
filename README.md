@@ -1,7 +1,7 @@
 # SWMON
 ### Simple autodiscovering LLDP network mapper for Nagios and Nagvis with STP monitoring support
 
-![img.png](img_1.png)
+<a href="https://imgbb.com/"><img src="https://i.ibb.co/M9tFTvh/img-1.png" alt="img-1" border="0"></a>
 
 ## How It Works
 Swmon scans network blocks with ping. Then, try to gather system information and LLDP links from alive hosts via SNMP. Finally, it work to "connect all the ends" and build a logical topology of the network.
@@ -187,8 +187,8 @@ Don't worry about orange "UNKNOWN" services we will fix it soon.
 After the first scan, you will end with orange connections telling us that the status of the services is
 **'UNKNOWN'**.
 
-![img_3.png](img_3.png)
-![img_4.png](img_4.png)
+<a href="https://ibb.co/X4rJvFW"><img src="https://i.ibb.co/JdwkMrc/img-3.png" alt="img-3" border="0"></a>
+<a href="https://ibb.co/KswnknB"><img src="https://i.ibb.co/1X6c5cB/img-4.png" alt="img-4" border="0"></a>
 
 It is a predicted behavior because we don't tell swmon which STP protocol devices are using
 and how to retrieve STP statuses.  
@@ -227,8 +227,7 @@ Press ENTER to list module values...
 ```
 Now, you can use OID to search for the MIB module. I use [oidref](https://oidref.com/).
 
-![img.png](img.png)
-
+<a href="https://ibb.co/DpZcnVb"><img src="https://i.ibb.co/YZxnGRW/img.png" alt="img" border="0"></a>
 Download the MIB, place it in `/usr/local/etc/swmon/mibs` directory, and name as the module name in the device `sysORtable`.
 ```
 sudo mv ~/Downloads/dlkMSTP.mib /usr/local/etc/swmon/mibs/swMSTPMIB.mib
@@ -319,12 +318,14 @@ Do not forget to clear swmon cache every time you need to change target OIDs.
 sudo rm /tmp/swmon_*
 ```
 
-![img_5.png](img_5.png)
+<a href="https://ibb.co/RCtGD9D"><img src="https://i.ibb.co/Xz6fCbC/img-5.png" alt="img-5" border="0"></a>
 
 You can also add your own values maps in `/usr/local/etc/swmon/mibs/oids/value_maps.yaml` file and
 monitor whatever protocol you want.
 
 ## Some usage tips
+
+<a href="https://ibb.co/ZzqLKtj"><img src="https://i.ibb.co/d48W61T/img-2.png" alt="img-2" border="0"></a>
 
 - **[Set](https://support.nagios.com/forum/viewtopic.php?f=7&t=60813) Nagios `interval_length` to `1` for "realtime" monitoring.**
 - **Swmon will not entirely rewrite your map. Swmon will not delete any host already on the map.
