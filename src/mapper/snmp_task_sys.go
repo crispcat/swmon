@@ -21,6 +21,7 @@ func SNMP_SysNameDescr(task *NetTask, queue *NetTaskQueue, hostsMap *HostsModel)
 
 	err = GetOids(client, []*SnmpRequest{sysNameReq, sysDescReq})
 	if err != nil {
+		host.WriteToConfig = true
 		return
 	}
 
