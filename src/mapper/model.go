@@ -264,6 +264,20 @@ func (host *Host) SetUniqueName(name string) {
 	}
 }
 
+func sanitizeString(s string) string {
+	var replacer = strings.NewReplacer(
+		"\r\n", "",
+		"\r", "",
+		"\n", "",
+		"\v", "",
+		"\f", "",
+		"\u0085", "",
+		"\u2028", "",
+		"\u2029", "",
+	)
+	return replacer.Replace(s)
+}
+
 func (host *Host) AddParent(parent *Host) {
 
 	host.Parents = append(host.Parents, parent.GetUniqueName())

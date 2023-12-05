@@ -40,9 +40,9 @@ func SNMP_SysNameDescr(task *NetTask, queue *NetTaskQueue, hostsMap *HostsModel)
 			task.ip, sysNameReq.name, sysNameReq.oid, nameRes)
 	}
 
-	host.SetUniqueName(nameRes)
+	host.SetUniqueName(sanitizeString(nameRes))
 	host.WriteToConfig = true
-	host.Description = desRes
+	host.Description = sanitizeString(desRes)
 
 	WriteAll("[%s] System Name/Description: %s / %s", task.ip, nameRes, desRes)
 
