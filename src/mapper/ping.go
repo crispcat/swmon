@@ -44,7 +44,6 @@ func Ping(task *NetTask, queue *NetTaskQueue, hostsModel *HostsModel) {
 
 		host := hostsModel.GetOrCreate(task.ip)
 		host.NetworkArgs = task.swargs
-		queue.Enqueue(NetTask{ip: task.ip, swargs: task.swargs, method: SNMP_SysNameDescr})
 
 	} else if host := hostsModel.Get(task.ip); Config.ForgetUnreachable && host != nil {
 		var output strings.Builder
