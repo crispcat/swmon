@@ -42,6 +42,7 @@ type SwmonNetworkArgs struct {
 	SnmpPort            uint16 `yaml:"snmp_port"`
 	SnmpVersion         uint8  `yaml:"snmp_version"`
 	SnmpTimeout         uint64 `yaml:"snmp_timeout"`
+	SnmpRetries         uint8  `yaml:"snmp_retries"`
 }
 
 func main() {

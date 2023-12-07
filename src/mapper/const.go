@@ -24,6 +24,7 @@ var DEFAULT_NETWORK_ARGS = SwmonNetworkArgs{
 	SnmpCommunityString: SNMP_COMMUNITY,
 	SnmpVersion:         2,
 	SnmpTimeout:         15_000,
+	SnmpRetries:         5,
 }
 
 //---------------------------------------------SNMP-------------------------------------------------------------------//
