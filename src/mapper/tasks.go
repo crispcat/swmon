@@ -21,9 +21,9 @@ type NetTaskQueue struct {
 func (t *NetTaskQueue) Enqueue(task NetTask) {
 
 	t.tasksToWait.Add(1)
-	//Verbose("Added 1 to waiter")
+	Verbose("Added 1 to waiter")
 	t.tasks <- task
-	//Verbose("Pushed new task")
+	Verbose("Pushed new task")
 }
 
 func (t *NetTaskQueue) GetOne() NetTask {
