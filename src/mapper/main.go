@@ -191,7 +191,7 @@ func ScanNetwork() (*HostsModel, *big.Int) {
 		hostsModel.Import(knownHosts)
 	}
 
-	taskQueue := CreateTaskQueue(1024)
+	taskQueue := CreateTaskQueue()
 	for w := uint(0); w < Config.Workers; w++ {
 		go NetWorker(taskQueue, hostsModel)
 	}
@@ -228,7 +228,7 @@ func ScanKnownHosts() (*HostsModel, *big.Int) {
 	hostsModel := CreateHostsModel()
 	hostsModel.Import(hosts)
 
-	taskQueue := CreateTaskQueue(256)
+	taskQueue := CreateTaskQueue()
 	for w := uint(0); w < Config.Workers; w++ {
 		go NetWorker(taskQueue, hostsModel)
 	}
