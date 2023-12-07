@@ -40,7 +40,7 @@ func (t *NetTaskQueue) WaitAllTasksCompletesAndClose() {
 	close(t.tasks)
 }
 
-func CreateTaskQueue(bufferSize uint8) *NetTaskQueue {
+func CreateTaskQueue(bufferSize uint32) *NetTaskQueue {
 
 	tasks := NetTaskQueue{
 		tasks:       make(chan NetTask, bufferSize),
