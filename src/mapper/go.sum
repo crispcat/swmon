@@ -1,3 +1,5 @@
+github.com/ctrlrsf/gosnmp v0.0.0-20150305205032-f7095eb13af5 h1:XfLNx4N1IZgVwmdeZrzrA9Fs4CQDzagKBLQxM1dLteU=
+github.com/ctrlrsf/gosnmp v0.0.0-20150305205032-f7095eb13af5/go.mod h1:R6/wGMMfuTvVptFBeXVV8bOPbaPIAZlRZNzjqKW3AbA=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/go-ping/ping v1.1.0 h1:3MCGhVX4fyEUuhsfwPrsEdQw6xspHkv5zHsiSoDFZYw=
