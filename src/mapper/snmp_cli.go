@@ -26,6 +26,7 @@ func CreateSnmpClient(task *NetTask) *goSNMP.GoSNMP {
 		Community: task.swargs.SnmpCommunityString,
 		MsgFlags:  SNMP_MSG_FLAGS,
 		Timeout:   time.Duration(task.swargs.SnmpTimeout) * time.Millisecond,
+		Retries:   int(task.swargs.SnmpRetries),
 	}
 }
 
