@@ -7,7 +7,7 @@ func LoadMibs() {
 		ErrorAll("Unable to load MIBs: %s", err)
 	}
 
-	TestLldpMibs()
+	//TestLldpMibs()
 }
 
 func TestLldpMibs() {
