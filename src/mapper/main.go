@@ -208,7 +208,7 @@ func ScanNetwork() (*HostsModel, *big.Int) {
 	WriteAll("Network scan completed!")
 	WriteAll("Retrieving SNMP data...")
 
-	taskQueue = CreateTaskQueue(0)
+	taskQueue = CreateTaskQueue(10000)
 	go NetWorker(taskQueue, hostsModel)
 
 	for _, host := range hostsModel.Export() {
@@ -256,7 +256,7 @@ func ScanKnownHosts() (*HostsModel, *big.Int) {
 	WriteAll("Network scan completed!")
 	WriteAll("Retrieving SNMP data...")
 
-	taskQueue = CreateTaskQueue(0)
+	taskQueue = CreateTaskQueue(10000)
 	go NetWorker(taskQueue, hostsModel)
 
 	for _, host := range hostsModel.Export() {
