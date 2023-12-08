@@ -193,7 +193,7 @@ func ScanNetwork() (*HostsModel, *big.Int) {
 		hostsModel.Import(knownHosts)
 	}
 
-	taskQueue := CreateTaskQueue(0)
+	taskQueue := CreateTaskQueue(10000000)
 	for w := uint(0); w < Config.Workers; w++ {
 		go NetWorker(taskQueue, hostsModel)
 	}
@@ -208,7 +208,7 @@ func ScanNetwork() (*HostsModel, *big.Int) {
 	WriteAll("Network scan completed!")
 	WriteAll("Retrieving SNMP data...")
 
-	taskQueue = CreateTaskQueue(0)
+	taskQueue = CreateTaskQueue(10000000)
 
 	if SnmpSync {
 		go NetWorker(taskQueue, hostsModel)
@@ -249,7 +249,7 @@ func ScanKnownHosts() (*HostsModel, *big.Int) {
 	hostsModel := CreateHostsModel()
 	hostsModel.Import(hosts)
 
-	taskQueue := CreateTaskQueue(0)
+	taskQueue := CreateTaskQueue(10000000)
 	for w := uint(0); w < Config.Workers; w++ {
 		go NetWorker(taskQueue, hostsModel)
 	}
@@ -263,7 +263,7 @@ func ScanKnownHosts() (*HostsModel, *big.Int) {
 	WriteAll("Network scan completed!")
 	WriteAll("Retrieving SNMP data...")
 
-	taskQueue = CreateTaskQueue(0)
+	taskQueue = CreateTaskQueue(10000000)
 
 	if SnmpSync {
 		go NetWorker(taskQueue, hostsModel)
