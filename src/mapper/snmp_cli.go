@@ -1,7 +1,7 @@
 package main
 
 import (
-	goSNMP "github.com/gosnmp/gosnmp"
+	goSNMP "swmon_mapper/gosnmp-fixed"
 	"time"
 )
 
@@ -24,7 +24,6 @@ func CreateSnmpClient(task *NetTask) *goSNMP.GoSNMP {
 		Port:      task.swargs.SnmpPort,
 		Version:   version,
 		Community: task.swargs.SnmpCommunityString,
-		MsgFlags:  SNMP_MSG_FLAGS,
 		Timeout:   time.Duration(task.swargs.SnmpTimeout) * time.Millisecond,
 		Retries:   int(task.swargs.SnmpRetries),
 	}

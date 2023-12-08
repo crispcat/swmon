@@ -5,8 +5,6 @@ build_modules () {
     local BUILD_DIR=$2
     # build modules
     build_module "$SOURCE_DIR/src/mapper" "$BUILD_DIR"
-    build_module "$SOURCE_DIR/src/mib-scanner" "$BUILD_DIR"
-    build_module "$SOURCE_DIR/src/nagios-plugins/stp-plugin" "$BUILD_DIR"
 }
 
 build_module () {

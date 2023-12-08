@@ -14,6 +14,8 @@ const W_DESCR = `Number of parralel workers. Big number increase speed but netwo
                     Recomended 500-2000. If your network range is less, set workers count accordingly to your addresses range.
                     If not provided, this is default befaviour.`
 
+const SS_DESCR = "Retrieve SNMP data in one thread. Useful for clear logging and troubleshooting."
+
 const S_DESCR = "SNMP Community string. Default is \"public\"."
 
 const L_DESCR = "Path to logs file. Default logs is swmon_log in " + ETC_PATH

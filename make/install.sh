@@ -8,8 +8,8 @@ then
       sudo mkdir $RES_DIR
 fi
 
-sudo rsync -a . $RES_DIR --exclude swmon_mapper --exclude swmon_check_stp --exclude stp_mib_scanner --exclude install.sh
-sudo rsync -a swmon_mapper swmon_check_stp stp_mib_scanner $BIN_DIR
+sudo rsync -a . $RES_DIR --exclude install.sh
+sudo rsync -a swmon_mapper $BIN_DIR
 
 (cd "$RES_DIR/.." || exit 1
   sudo chown -R root:root swmon

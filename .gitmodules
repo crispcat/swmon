@@ -4,3 +4,6 @@
 [submodule "deps/nagvis"]
 	path = deps/nagvis
 	url = https://github.com/crispcat/nagvis.git
+[submodule "src/mapper/gosnmp-fixed"]
+	path = src/mapper/gosnmp-fixed
+	url = https://github.com/crispcat/gosnmp-net-fixed.git

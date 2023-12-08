@@ -1,8 +1,8 @@
 package main
 
 import (
-	goSNMP "github.com/gosnmp/gosnmp"
 	"strings"
+	goSNMP "swmon_mapper/gosnmp-fixed"
 	utils "swmon_shared"
 )
 

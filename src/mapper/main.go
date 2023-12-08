@@ -19,6 +19,7 @@ var (
 	IsVerbose        bool
 	ConfigPath       string
 	ForgetAllHosts   bool
+	SnmpSync         bool
 )
 
 // Config are args both from command line and config
@@ -111,6 +112,7 @@ func ParseArgsAndConfig() {
 	flag.BoolVar(&Config.ForgetUnreachable, "f", false, F_DESCR)
 	flag.BoolVar(&ForgetAllHosts, "ff", false, FF_DESCR)
 	flag.BoolVar(&IsVerbose, "v", false, V_DESCR)
+	flag.BoolVar(&SnmpSync, "ss", false, SS_DESCR)
 	flag.Parse()
 
 	if Help {
@@ -206,7 +208,7 @@ func ScanNetwork() (*HostsModel, *big.Int) {
 	WriteAll("Network scan completed!")
 	WriteAll("Retrieving SNMP data...")
 
-	taskQueue = CreateTaskQueue(1000)
+	taskQueue = CreateTaskQueue(0)
 	go NetWorker(taskQueue, hostsModel)
 
 	for _, host := range hostsModel.Export() {
@@ -247,6 +249,18 @@ func ScanKnownHosts() (*HostsModel, *big.Int) {
 
 	for _, host := range hosts {
 		taskQueue.Enqueue(NetTask{ip: host.Ip, swargs: host.NetworkArgs, method: Ping})
+	}
+
+	taskQueue.WaitAllTasksCompletesAndClose()
+
+	WriteAll("Network scan completed!")
+	WriteAll("Retrieving SNMP data...")
+
+	taskQueue = CreateTaskQueue(0)
+	go NetWorker(taskQueue, hostsModel)
+
+	for _, host := range hostsModel.Export() {
+		taskQueue.Enqueue(NetTask{ip: host.Ip, swargs: host.NetworkArgs, method: SNMP_SysNameDescr})
 	}
 
 	taskQueue.WaitAllTasksCompletesAndClose()

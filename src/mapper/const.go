@@ -1,8 +1,8 @@
 package main
 
 import (
-	goSNMP "github.com/gosnmp/gosnmp"
 	"regexp"
+	goSNMP "swmon_mapper/gosnmp-fixed"
 	shared "swmon_shared"
 )
 
@@ -31,7 +31,6 @@ var DEFAULT_NETWORK_ARGS = SwmonNetworkArgs{
 
 const SNMP_PORT = uint16(161)
 const SNMP_VERSION = goSNMP.Version2c
-const SNMP_MSG_FLAGS = goSNMP.NoAuthNoPriv
 const SNMP_COMMUNITY = "public"
 
 //--------------------------------------------FILES-------------------------------------------------------------------//

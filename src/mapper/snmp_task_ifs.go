@@ -111,5 +111,5 @@ func SNMP_Ifs(task *NetTask, queue *NetTaskQueue, hostsMap *HostsModel) {
 
 	WriteAll("[%s] Interfaces probes DONE!", task.ip)
 
-	queue.Enqueue(NetTask{ip: task.ip, swargs: task.swargs, method: SNMP_GetLLDP})
+	//queue.Enqueue(NetTask{ip: task.ip, swargs: task.swargs, method: SNMP_GetLLDP})
 }
