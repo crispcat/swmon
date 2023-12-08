@@ -1,7 +1,5 @@
 package main
 
-import utils "swmon_shared"
-
 func SNMP_Ifs(task *NetTask, queue *NetTaskQueue, hostsMap *HostsModel) {
 
 	client, finalizer, err := SnmpStartRoutine(task, queue)
@@ -33,7 +31,7 @@ func SNMP_Ifs(task *NetTask, queue *NetTaskQueue, hostsMap *HostsModel) {
 		}
 
 		ifs := host.GetOrCreateInterface(portNumber)
-		ifs.Index = utils.Sanitize(ifIndex)
+		ifs.Index = Sanitize(ifIndex)
 
 		return nil
 	})
@@ -94,7 +92,7 @@ func SNMP_Ifs(task *NetTask, queue *NetTaskQueue, hostsMap *HostsModel) {
 
 		ifs := host.GetOrCreateInterface(portNumber)
 
-		switch utils.Sanitize(ifOperStatus) {
+		switch Sanitize(ifOperStatus) {
 		case "1":
 			// up
 			ifs.Operational = true

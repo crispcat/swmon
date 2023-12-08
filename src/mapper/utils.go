@@ -1,9 +1,7 @@
-package shared
+package main
 
 import (
-	"fmt"
 	"math/big"
-	"os"
 	"regexp"
 	"strconv"
 )
@@ -73,11 +71,4 @@ func ParseAsUint(value interface{}) string {
 	}
 
 	return big.NewInt(val).String()
-}
-
-func PressEnterTo(action string) {
-
-	fmt.Printf("Press ENTER to %s...\n", action)
-	var b [1]byte
-	os.Stdin.Read(b[:])
 }

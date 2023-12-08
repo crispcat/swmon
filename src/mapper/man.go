@@ -1,8 +1,6 @@
 package main
 
-import shared "swmon_shared"
-
-const ETC_PATH = shared.ETC
+const ETC_PATH = ETC
 
 const N_DESCR = "Network blocks in CIDR format (192.0.0.1/16). Comma separated."
 

@@ -1,10 +1,8 @@
 package main
 
-import utils "swmon_shared"
-
 func LoadMibs() {
 
-	err := utils.MIB.LoadModules()
+	err := MIB.LoadModules()
 	if err != nil {
 		ErrorAll("Unable to load MIBs: %s", err)
 	}
@@ -49,7 +47,7 @@ func TestLldpMibs() {
 
 func MibsGetOid(name string) string {
 
-	oid, err := utils.MIB.OID(name)
+	oid, err := MIB.OID(name)
 	if err != nil {
 		ErrorAll("FATAL! Unable to get OID for %s", name)
 	}

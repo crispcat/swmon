@@ -2,7 +2,6 @@ package main
 
 import (
 	"strings"
-	utils "swmon_shared"
 )
 
 type SnmpResultType uint32
@@ -48,10 +47,10 @@ func (req *SnmpRequest) ParseSnmpResult() string {
 		return req.assumeParse()
 
 	case ResultTypeString:
-		return utils.ParseString(req.result.Value)
+		return ParseString(req.result.Value)
 
 	case ResultTypeInteger:
-		return utils.ParseAsUint(req.result.Value)
+		return ParseAsUint(req.result.Value)
 
 	case ResultTypeHardwareAddress:
 		return ParseBytes(req.result.Value, 6, 8, 20)
@@ -145,7 +144,7 @@ func (req *SnmpRequest) GetSplittedOid() []string {
 
 func AssumeNumberOnPos(req *SnmpRequest, oid []string, pos int) (uint32, bool) {
 
-	num, err := utils.GetUint32(oid, pos)
+	num, err := GetUint32(oid, pos)
 	if err != nil {
 		WriteAll("[%s] SNMP GET [%s][%s] OID POS %d IS NOT A NUMBER! MAYBE UNSUPPORTED OID SCHEME",
 			req.host.Ip, req.name, req.oid, pos)

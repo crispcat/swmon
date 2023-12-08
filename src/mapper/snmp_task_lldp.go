@@ -1,7 +1,5 @@
 package main
 
-import utils "swmon_shared"
-
 func SNMP_GetLLDP(task *NetTask, queue *NetTaskQueue, hostsMap *HostsModel) {
 
 	client, finalizer, err := SnmpStartRoutine(task, queue)
@@ -33,7 +31,7 @@ func SNMP_GetLLDP(task *NetTask, queue *NetTaskQueue, hostsMap *HostsModel) {
 		}
 
 		localLldpPort := host.GetOrCreateLocalLldpPort(portNumber)
-		localLldpPort.Id = utils.Sanitize(locPortId)
+		localLldpPort.Id = Sanitize(locPortId)
 
 		return nil
 	})
@@ -58,7 +56,7 @@ func SNMP_GetLLDP(task *NetTask, queue *NetTaskQueue, hostsMap *HostsModel) {
 		}
 
 		remoteLldpPort := host.GetOrCreateRemoteLldpPort(localPortNumber, oidEnds)
-		remoteLldpPort.Id = utils.Sanitize(remPortId)
+		remoteLldpPort.Id = Sanitize(remPortId)
 
 		return nil
 	})
@@ -146,7 +144,7 @@ func SNMP_GetLLDP(task *NetTask, queue *NetTaskQueue, hostsMap *HostsModel) {
 		}
 
 		remoteLldpPort := host.GetOrCreateRemoteLldpPort(localPortNumber, oidEnds)
-		remoteLldpPort.ChassisId = utils.Sanitize(remChassisId)
+		remoteLldpPort.ChassisId = Sanitize(remChassisId)
 
 		return nil
 	})

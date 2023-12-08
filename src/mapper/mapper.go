@@ -9,14 +9,13 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
-	shared "swmon_shared"
 	"unicode"
 )
 
 const (
-	TEMPLATE_NAGVIS_HEADER = shared.ETC + "maps/nagvis-header.cfg"
-	TEMPLATE_NAGVIS_HOST   = shared.ETC + "maps/nagvis-host.cfg"
-	TEMPLATE_NAGVIS_LINE   = shared.ETC + "maps/nagvis-line.cfg"
+	TEMPLATE_NAGVIS_HEADER = ETC + "maps/nagvis-header.cfg"
+	TEMPLATE_NAGVIS_HOST   = ETC + "maps/nagvis-host.cfg"
+	TEMPLATE_NAGVIS_LINE   = ETC + "maps/nagvis-line.cfg"
 )
 
 //--------------------------------------------------------------------------------------------------------------------//
