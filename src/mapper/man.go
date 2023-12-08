@@ -45,33 +45,33 @@ DESCRIPTION
 
 	REQUIRED
 
-	-n	    ` + N_DESCR + `
+	-n	    	` + N_DESCR + `
 
-	-r 	    ` + R_DESCR + `
+	-r 	    	` + R_DESCR + `
 
-	-m 	    ` + M_DESCR + `
+	-m 	    	` + M_DESCR + `
 
 	NOT REQUIRED
 
-	-w 	    ` + W_DESCR + `
+	-w 	    	` + W_DESCR + `
 
-	-s 	    ` + S_DESCR + `
+	-s 	    	` + S_DESCR + `
 
-	-l 	    ` + L_DESCR + `
+	-l 	    	` + L_DESCR + `
 
 	MODES
 
-	-c 	    ` + C_DESCR + `
+	-c 	    	` + C_DESCR + `
 
 	-conf       ` + CONF_DESCR + `
 
-	-k 	    ` + K_DESCR + `
+	-k 	    	` + K_DESCR + `
 
-	-f 	    ` + F_DESCR + `
+	-f 	    	` + F_DESCR + `
 
-	-ff         ` + FF_DESCR + `
+	-ff     	` + FF_DESCR + `
 
-	-v 	    ` + V_DESCR + `
+	-v 	    	` + V_DESCR + `
 
 	-h --help   ` + H_DESCR + `
 
@@ -88,5 +88,4 @@ EXAMPLE
 
 	Remap already found hosts from root and remove unreachable hosts:
       > sudo swmon_mapper -r 192.168.225.33 -k -f
-
 `

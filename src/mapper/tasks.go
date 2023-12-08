@@ -3,6 +3,7 @@ package main
 import (
 	"net"
 	"sync"
+	"time"
 )
 
 type NetMethod func(task *NetTask, queue *NetTaskQueue, hostsModel *HostsModel)
@@ -53,6 +54,7 @@ func CreateTaskQueue(bufferSize uint32) *NetTaskQueue {
 func NetWorker(queue *NetTaskQueue, hostsModel *HostsModel) {
 
 	for task := range queue.tasks {
+		time.Sleep(3000 * time.Millisecond)
 		task.method(&task, queue, hostsModel)
 	}
 }

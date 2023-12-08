@@ -366,7 +366,7 @@ func (host *Host) GetUniqueName() string {
 func (host *Host) GetUniqueAlias() string {
 
 	if host.Name != "" {
-		return host.Ip.String() + " :: " + host.Name
+		return host.Ip.String() + "::" + host.Name
 	} else {
 		return host.Ip.String()
 	}
