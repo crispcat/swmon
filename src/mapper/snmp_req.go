@@ -2,7 +2,6 @@ package main
 
 import (
 	"strings"
-	goSNMP "swmon_mapper/gosnmp-fixed"
 	utils "swmon_shared"
 )
 
@@ -24,7 +23,7 @@ type SnmpRequest struct {
 	oid         string
 	name        string
 	parseToType SnmpResultType
-	result      goSNMP.SnmpPDU
+	result      SnmpPDU
 }
 
 func CraftSnmpRequest(host *Host, name string, parseToType SnmpResultType) *SnmpRequest {

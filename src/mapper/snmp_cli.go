@@ -1,25 +1,24 @@
 package main
 
 import (
-	goSNMP "swmon_mapper/gosnmp-fixed"
 	"time"
 )
 
-func CreateSnmpClient(task *NetTask) *goSNMP.GoSNMP {
+func CreateSnmpClient(task *NetTask) *GoSNMP {
 
 	version := SNMP_VERSION
 	switch task.swargs.SnmpVersion {
 	case 1:
-		version = goSNMP.Version1
+		version = Version1
 	case 2:
-		version = goSNMP.Version2c
+		version = Version2c
 	case 3:
 		ErrorAll("SNMP Version 3 is not supported. Config:\n%s", task.swargs)
 	default:
 		ErrorAll("Invalid SNMP version provided. Config:\n%s", task.swargs)
 	}
 
-	return &goSNMP.GoSNMP{
+	return &GoSNMP{
 		Target:    task.ip.String(),
 		Port:      task.swargs.SnmpPort,
 		Version:   version,
@@ -29,7 +28,7 @@ func CreateSnmpClient(task *NetTask) *goSNMP.GoSNMP {
 	}
 }
 
-func SnmpStart(client *goSNMP.GoSNMP) error {
+func SnmpStart(client *GoSNMP) error {
 
 	err := client.Connect()
 	if err != nil {
@@ -40,7 +39,7 @@ func SnmpStart(client *goSNMP.GoSNMP) error {
 	return nil
 }
 
-func SnmpClose(client *goSNMP.GoSNMP) {
+func SnmpClose(client *GoSNMP) {
 
 	err := client.Conn.Close()
 	if err != nil {
@@ -48,7 +47,7 @@ func SnmpClose(client *goSNMP.GoSNMP) {
 	}
 }
 
-func SnmpStartRoutine(task *NetTask, queue *NetTaskQueue) (client *goSNMP.GoSNMP, finalizer func(), err error) {
+func SnmpStartRoutine(task *NetTask, queue *NetTaskQueue) (client *GoSNMP, finalizer func(), err error) {
 
 	client = CreateSnmpClient(task)
 	err = SnmpStart(client)
@@ -64,7 +63,7 @@ func SnmpStartRoutine(task *NetTask, queue *NetTaskQueue) (client *goSNMP.GoSNMP
 	return client, finalizer, nil
 }
 
-func GetOids(client *goSNMP.GoSNMP, requests []*SnmpRequest) error {
+func GetOids(client *GoSNMP, requests []*SnmpRequest) error {
 
 	oids := make([]string, len(requests))
 	for i, request := range requests {
@@ -87,10 +86,10 @@ func GetOids(client *goSNMP.GoSNMP, requests []*SnmpRequest) error {
 	return nil
 }
 
-func WalkOids(client *goSNMP.GoSNMP, requests []*SnmpRequest, callback func(req *SnmpRequest) error) error {
+func WalkOids(client *GoSNMP, requests []*SnmpRequest, callback func(req *SnmpRequest) error) error {
 
 	for i, request := range requests {
-		err := client.Walk(request.oid, func(result goSNMP.SnmpPDU) error {
+		err := client.Walk(request.oid, func(result SnmpPDU) error {
 			req := requests[i]
 			req.oid = result.Name
 			req.result = result
