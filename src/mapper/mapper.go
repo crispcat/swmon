@@ -269,7 +269,7 @@ func CreateMap(model *HostsModel, path string, update bool) {
 	model.Map.Range(func(key, value any) bool {
 
 		host := value.(*Host)
-		if !host.WriteToConfig {
+		if !host.WriteToMap {
 			return true
 		}
 

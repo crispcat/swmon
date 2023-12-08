@@ -21,8 +21,8 @@ func SNMP_SysNameDescr(task *NetTask, queue *NetTaskQueue, hostsMap *HostsModel)
 
 	err = GetOids(client, []*SnmpRequest{sysNameReq, sysDescReq})
 	if err != nil {
-		host.SetUniqueName(host.Ip.String())
 		host.WriteToConfig = true
+		host.WriteToMap = false
 		return
 	}
 
@@ -42,6 +42,7 @@ func SNMP_SysNameDescr(task *NetTask, queue *NetTaskQueue, hostsMap *HostsModel)
 
 	host.SetUniqueName(sanitizeString(nameRes))
 	host.WriteToConfig = true
+	host.WriteToMap = true
 	host.Description = sanitizeString(desRes)
 
 	WriteAll("[%s] System Name/Description: %s / %s", task.ip, nameRes, desRes)

@@ -21,6 +21,7 @@ type Host struct {
 	Name          string
 	Description   string
 	WriteToConfig bool
+	WriteToMap    bool
 	IfsCount      uint32
 	Interfaces    map[uint32]*Interface
 	LldpPorts     map[uint32]*LocalLldpPort
@@ -260,7 +261,7 @@ func (host *Host) SetUniqueName(name string) {
 	if name == "" {
 		host.Name = host.Ip.String()
 	} else {
-		host.Name = host.Ip.String() + ":" + name
+		host.Name = name
 	}
 }
 
@@ -360,11 +361,17 @@ func (host *Host) GetUniqueName() string {
 
 func (host *Host) GetUniqueAlias() string {
 
-	if host.Description != "" {
-		return host.GetUniqueName() + ":" + strings.ReplaceAll(host.Description, " ", "_")
+	alias := ""
+	if host.Name != "" {
+		alias += host.Name
 	} else {
-		return host.GetUniqueName()
+		alias += host.Ip.String()
 	}
+	if host.Description != "" {
+		alias += ":" + strings.ReplaceAll(host.Description, " ", "_")
+	}
+
+	return alias
 }
 
 func (host *Host) GetParentsString() string {
