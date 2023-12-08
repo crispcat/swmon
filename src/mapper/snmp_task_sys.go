@@ -82,5 +82,5 @@ func SNMP_IfNumber(task *NetTask, queue *NetTaskQueue, hostsMap *HostsModel) {
 		queue.Enqueue(NetTask{ip: task.ip, swargs: task.swargs, method: SNMP_Ifs})
 	}
 
-	WriteAll("[%s] Interfaces Count: %d", task.ip, ifsCount)
+	WriteAll("[%s] Interfaces Count: %d\n", task.ip, ifsCount)
 }
