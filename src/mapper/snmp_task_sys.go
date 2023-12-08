@@ -13,7 +13,7 @@ func SNMP_SysNameDescr(task *NetTask, queue *NetTaskQueue, hostsMap *HostsModel)
 
 	defer finalizer()
 
-	WriteAll("[%s] Starting SNMP System Name/Description probe...", task.ip)
+	WriteAll("[%s] Starting SNMP System Name/Description probe...\n", task.ip)
 
 	host := hostsMap.GetOrCreate(task.ip)
 	sysNameReq := CraftSnmpRequest(host, "sysName.0", ResultTypeString)
@@ -45,7 +45,7 @@ func SNMP_SysNameDescr(task *NetTask, queue *NetTaskQueue, hostsMap *HostsModel)
 	host.WriteToMap = true
 	host.Description = sanitizeString(desRes)
 
-	WriteAll("[%s] System Name/Description: %s / %s", task.ip, nameRes, desRes)
+	WriteAll("[%s] System Name/Description: %s / %s\n", task.ip, nameRes, desRes)
 
 	queue.Enqueue(NetTask{ip: task.ip, swargs: task.swargs, method: SNMP_IfNumber})
 }

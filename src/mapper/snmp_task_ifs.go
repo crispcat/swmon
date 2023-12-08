@@ -9,7 +9,7 @@ func SNMP_Ifs(task *NetTask, queue *NetTaskQueue, hostsMap *HostsModel) {
 
 	defer finalizer()
 
-	WriteAll("[%s] Starting Interfaces probes...", task.ip)
+	WriteAll("[%s] Starting Interfaces probes...\n", task.ip)
 
 	host := hostsMap.GetOrCreate(task.ip)
 	host.ClearInterfaces()
@@ -107,7 +107,7 @@ func SNMP_Ifs(task *NetTask, queue *NetTaskQueue, hostsMap *HostsModel) {
 		return nil
 	})
 
-	WriteAll("[%s] Interfaces probes DONE!", task.ip)
+	WriteAll("[%s] Interfaces probes DONE!\n", task.ip)
 
 	//queue.Enqueue(NetTask{ip: task.ip, swargs: task.swargs, method: SNMP_GetLLDP})
 }

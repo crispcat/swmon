@@ -114,7 +114,7 @@ func (d *NagvisMapEntityData) Set(name string, value string) bool {
 	fields := d.nagvisFields
 	p, ok := fields[name]
 	if !ok {
-		WriteAll("MAPPER: FIELD %s IS NOT DECLARED! FIELD WILL NOT BE CHENGED AND WILL PROCESSED AS IS", name)
+		WriteAll("MAPPER: FIELD %s IS NOT DECLARED! FIELD WILL NOT BE CHANGED AND WILL PROCESSED AS IS", name)
 		return false
 	}
 

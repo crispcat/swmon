@@ -356,22 +356,20 @@ func (host *Host) DefaultFormatter(fieldName string) string {
 
 func (host *Host) GetUniqueName() string {
 
-	return host.Name
+	if host.Name != "" {
+		return host.Name + " on " + host.Ip.String()
+	} else {
+		return host.Ip.String()
+	}
 }
 
 func (host *Host) GetUniqueAlias() string {
 
-	alias := ""
 	if host.Name != "" {
-		alias += host.Name
+		return host.Name + " on " + host.Ip.String()
 	} else {
-		alias += host.Ip.String()
+		return host.Ip.String()
 	}
-	if host.Description != "" {
-		alias += ":" + strings.ReplaceAll(host.Description, " ", "_")
-	}
-
-	return alias
 }
 
 func (host *Host) GetParentsString() string {
