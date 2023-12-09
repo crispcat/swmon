@@ -357,7 +357,7 @@ func (host *Host) DefaultFormatter(fieldName string) string {
 func (host *Host) GetUniqueName() string {
 
 	if host.Name != "" {
-		return host.Ip.String() + "--" + host.Name
+		return host.Ip.String() + ":::" + host.Name
 	} else {
 		return host.Ip.String()
 	}

@@ -26,9 +26,9 @@ var (
 var Config SwmonConfig
 
 type SwmonConfig struct {
-	LogsPath          string             `yaml:"logs_path"`
-	Workers           uint               `yaml:"workers"`
-	RootAddr          string             `yaml:"root_addr"`
+	LogsPath string `yaml:"logs_path"`
+	Workers  uint   `yaml:"workers"`
+	//RootAddr          string             `yaml:"root_addr"`
 	NagvisMap         string             `yaml:"nagvis_map"`
 	WwwUser           string             `yaml:"www_user"`
 	Networks          []SwmonNetworkArgs `yaml:"networks"`
@@ -103,7 +103,7 @@ func ParseArgsAndConfig() {
 	flag.BoolVar(&UseDefaultConfig, "c", false, C_DESCR)
 	flag.StringVar(&ConfigPath, "conf", "", CONF_DESCR)
 	flag.StringVar(&comandLineNetworkArgs.AddrBlocks, "n", "", N_DESCR)
-	flag.StringVar(&Config.RootAddr, "r", "", R_DESCR)
+	//flag.StringVar(&Config.RootAddr, "r", "", R_DESCR)
 	flag.UintVar(&Config.Workers, "w", 0, W_DESCR)
 	flag.StringVar(&Config.LogsPath, "l", LOG_FILE, L_DESCR)
 	flag.BoolVar(&OnlyKnownHosts, "k", false, K_DESCR)
@@ -169,7 +169,7 @@ func ScanNetwork() (*HostsModel, *big.Int) {
 		networks[i].Args = swargs
 	}
 
-	rootIp := ParseRootIp()
+	//rootIp := ParseRootIp()
 
 	LoadMibs()
 
@@ -223,14 +223,14 @@ func ScanNetwork() (*HostsModel, *big.Int) {
 	}
 
 	taskQueue.WaitAllTasksCompletesAndClose()
-	LinkHosts(hostsModel, rootIp)
+	//LinkHosts(hostsModel, rootIp)
 
 	return hostsModel, addressesCount
 }
 
 func ScanKnownHosts() (*HostsModel, *big.Int) {
 
-	rootIp := ParseRootIp()
+	//rootIp := ParseRootIp()
 
 	LoadMibs()
 
@@ -278,7 +278,7 @@ func ScanKnownHosts() (*HostsModel, *big.Int) {
 	}
 
 	taskQueue.WaitAllTasksCompletesAndClose()
-	LinkHosts(hostsModel, rootIp)
+	//LinkHosts(hostsModel, rootIp)
 
 	return hostsModel, big.NewInt(int64(len(hosts)))
 }
@@ -302,24 +302,24 @@ func ParseNetworkBlocks(swargs SwmonNetworkArgs) []*net.IPNet {
 	return netBlocks
 }
 
-func ParseRootIp() net.IP {
-
-	if Config.RootAddr == "" {
-		ErrorAll("Root address is not provided. See --help.")
-	}
-
-	rootIp := net.ParseIP(Config.RootAddr)
-	if rootIp == nil {
-		ErrorAll("Provided root %s is not IP address.", Config.RootAddr)
-	}
-
-	rootIp = rootIp[len(rootIp)-4:]
-	if rootIp == nil {
-		ErrorAll("Invalid root address provided: %s. See --help.", Config.RootAddr)
-	}
-
-	return rootIp
-}
+//func ParseRootIp() net.IP {
+//
+//	if Config.RootAddr == "" {
+//		ErrorAll("Root address is not provided. See --help.")
+//	}
+//
+//	rootIp := net.ParseIP(Config.RootAddr)
+//	if rootIp == nil {
+//		ErrorAll("Provided root %s is not IP address.", Config.RootAddr)
+//	}
+//
+//	rootIp = rootIp[len(rootIp)-4:]
+//	if rootIp == nil {
+//		ErrorAll("Invalid root address provided: %s. See --help.", Config.RootAddr)
+//	}
+//
+//	return rootIp
+//}
 
 func PopulateNetwalkers(netBlocks []*net.IPNet) []*Netwalker {
 
