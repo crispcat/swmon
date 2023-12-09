@@ -7,9 +7,9 @@ import (
 //-----------------------------------------CONFIG---------------------------------------------------------------------//
 
 var NEW_CONFIG = SwmonConfig{
-	LogsPath:          LOG_FILE,
-	Workers:           0,
-	RootAddr:          "",
+	LogsPath: LOG_FILE,
+	Workers:  0,
+	//RootAddr:          "",
 	WwwUser:           "www-data",
 	NagvisMap:         "/usr/local/nagvis/etc/maps/swmon-static.cfg",
 	Networks:          []SwmonNetworkArgs{DEFAULT_NETWORK_ARGS},
