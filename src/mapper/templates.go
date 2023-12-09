@@ -29,7 +29,7 @@ func ConstructSwitchTemplate(host *Host) string {
 		}
 
 		for _, iface := range host.Interfaces {
-			if iface.Operational && iface.SubOid < 256 {
+			if iface.Operational {
 				port = iface.SubOid
 				templates = append(templates, FormatTemplate(TEMPLATE_NAGIOS_PORT_LINK_STATUS_SERVICE, formatter))
 			}
