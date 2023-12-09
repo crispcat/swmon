@@ -23,7 +23,7 @@ func SNMP_SysNameDescr(task *NetTask, queue *NetTaskQueue, hostsMap *HostsModel)
 	err = GetOids(client, []*SnmpRequest{sysNameReq, sysDescReq, sysLocReq})
 	if err != nil {
 		host.WriteToConfig = true
-		host.WriteToMap = false
+		host.HaveSnmp = false
 		return
 	}
 
@@ -50,7 +50,7 @@ func SNMP_SysNameDescr(task *NetTask, queue *NetTaskQueue, hostsMap *HostsModel)
 
 	host.SetUniqueName(sanitizeString(nameRes))
 	host.WriteToConfig = true
-	host.WriteToMap = true
+	host.HaveSnmp = true
 	host.Description = sanitizeString(desRes)
 	host.Location = sanitizeString(locRes)
 

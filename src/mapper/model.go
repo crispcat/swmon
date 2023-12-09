@@ -22,7 +22,7 @@ type Host struct {
 	Description   string
 	Location      string
 	WriteToConfig bool
-	WriteToMap    bool
+	HaveSnmp      bool
 	IfsCount      uint32
 	Interfaces    map[uint32]*Interface
 	LldpPorts     map[uint32]*LocalLldpPort

@@ -13,7 +13,10 @@ func ConstructSwitchTemplate(host *Host) string {
 	templates := []string{
 		TEMPLATE_NAGIOS_SWITCH,
 		TEMPLATE_NAGIOS_PING_SERVICE,
-		TEMPLATE_NAGIOS_UPTIME_SERVICE,
+	}
+
+	if host.HaveSnmp {
+		templates = append(templates, TEMPLATE_NAGIOS_UPTIME_SERVICE)
 	}
 
 	if host.IfsCount > 0 {

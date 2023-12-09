@@ -269,7 +269,7 @@ func CreateMap(model *HostsModel, path string, update bool) {
 	model.Map.Range(func(key, value any) bool {
 
 		host := value.(*Host)
-		if !host.WriteToMap {
+		if !host.HaveSnmp {
 			return true
 		}
 
