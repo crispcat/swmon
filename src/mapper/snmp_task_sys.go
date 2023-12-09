@@ -18,8 +18,9 @@ func SNMP_SysNameDescr(task *NetTask, queue *NetTaskQueue, hostsMap *HostsModel)
 	host := hostsMap.GetOrCreate(task.ip)
 	sysNameReq := CraftSnmpRequest(host, "sysName.0", ResultTypeString)
 	sysDescReq := CraftSnmpRequest(host, "sysDescr.0", ResultTypeString)
+	sysLocReq := CraftSnmpRequest(host, "sysLocation.0", ResultTypeString)
 
-	err = GetOids(client, []*SnmpRequest{sysNameReq, sysDescReq})
+	err = GetOids(client, []*SnmpRequest{sysNameReq, sysDescReq, sysLocReq})
 	if err != nil {
 		host.WriteToConfig = true
 		host.WriteToMap = false
@@ -29,14 +30,21 @@ func SNMP_SysNameDescr(task *NetTask, queue *NetTaskQueue, hostsMap *HostsModel)
 	desRes := sysDescReq.ParseSnmpResult()
 	if desRes == "" || desRes == "0" {
 		WriteAll("[%s] SNMP System Name/Description probe result [%s][%s]: %s. IS ZERO OR EMPTY "+
-			"MAYBE A MISSMATCHED OID!\n",
+			"MAYBE A MISMATCHED OID!\n",
 			task.ip, sysDescReq.name, sysDescReq.oid, desRes)
 	}
 
 	nameRes := sysNameReq.ParseSnmpResult()
 	if nameRes == "" || nameRes == "0" {
 		WriteAll("[%s] SNMP System Name/Description probe result [%s][%s]: %s. IS ZERO OR EMPTY "+
-			"MAYBE A MISSMATCHED OID OR NAME NOT SET!\n",
+			"MAYBE A MISMATCHED OID OR NAME NOT SET!\n",
+			task.ip, sysNameReq.name, sysNameReq.oid, nameRes)
+	}
+
+	locRes := sysLocReq.ParseSnmpResult()
+	if locRes == "" || locRes == "0" {
+		WriteAll("[%s] SNMP System Location probe result [%s][%s]: %s. IS ZERO OR EMPTY "+
+			"MAYBE A MISMATCHED OID OR NAME NOT SET!\n",
 			task.ip, sysNameReq.name, sysNameReq.oid, nameRes)
 	}
 
@@ -44,8 +52,10 @@ func SNMP_SysNameDescr(task *NetTask, queue *NetTaskQueue, hostsMap *HostsModel)
 	host.WriteToConfig = true
 	host.WriteToMap = true
 	host.Description = sanitizeString(desRes)
+	host.Location = sanitizeString(locRes)
 
 	WriteAll("[%s] System Name/Description: %s / %s\n", task.ip, nameRes, desRes)
+	WriteAll("[%s] System Location: %s\n", task.ip, locRes)
 
 	queue.Enqueue(NetTask{ip: task.ip, swargs: task.swargs, method: SNMP_IfNumber})
 }

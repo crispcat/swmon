@@ -20,6 +20,7 @@ type Host struct {
 	Ip            net.IP
 	Name          string
 	Description   string
+	Location      string
 	WriteToConfig bool
 	WriteToMap    bool
 	IfsCount      uint32
@@ -356,20 +357,19 @@ func (host *Host) DefaultFormatter(fieldName string) string {
 
 func (host *Host) GetUniqueName() string {
 
-	if host.Name != "" {
-		return host.Ip.String() + ":::" + host.Name
-	} else {
-		return host.Ip.String()
+	name := host.Ip.String()
+	if host.Location != "" {
+		name += ":::" + host.Location
 	}
+	if host.Name != "" {
+		name += ":::" + host.Name
+	}
+	return name
 }
 
 func (host *Host) GetUniqueAlias() string {
 
-	if host.Name != "" {
-		return host.Ip.String() + "::" + host.Name
-	} else {
-		return host.Ip.String()
-	}
+	return host.GetUniqueName()
 }
 
 func (host *Host) GetParentsString() string {
