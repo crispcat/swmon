@@ -93,7 +93,7 @@ func WriteHostsModel(hostsMap *HostsModel) error {
 		return err
 	}
 
-	err = os.WriteFile(GetBackupFileName(HostsConfigFile), strd, os.FileMode(OS_FILE_PERMISSIONS_R).Perm())
+	err = os.WriteFile(GetBackupFileName(HostsModelFile), strd, os.FileMode(OS_FILE_PERMISSIONS_R).Perm())
 	if err != nil {
 		return err
 	}
@@ -162,7 +162,7 @@ func WriteNagiosHostsConfigFile(hostsModel *HostsModel) error {
 		return err
 	}
 
-	err = os.WriteFile(GetBackupFileName(HostsModelFile), hostsString, os.FileMode(OS_FILE_PERMISSIONS_R).Perm())
+	err = os.WriteFile(GetBackupFileName(HostsConfigFile), hostsString, os.FileMode(OS_FILE_PERMISSIONS_R).Perm())
 	if err != nil {
 		return err
 	}
