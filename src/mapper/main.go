@@ -19,7 +19,7 @@ var (
 	IsVerbose        bool
 	ConfigPath       string
 	ForgetAllHosts   bool
-	SnmpSync         bool
+	JustGenerate     bool
 )
 
 // Config are args both from command line and config
@@ -62,10 +62,11 @@ func main() {
 	var hostsModel *HostsModel
 	var addressesCount *big.Int
 
-	switch OnlyKnownHosts {
-	case true:
+	if OnlyKnownHosts {
 		hostsModel, addressesCount = ScanKnownHosts()
-	default:
+	} else if JustGenerate {
+		hostsModel, addressesCount = JustGenerateConfs()
+	} else {
 		hostsModel, addressesCount = ScanNetwork()
 	}
 
@@ -112,7 +113,7 @@ func ParseArgsAndConfig() {
 	flag.BoolVar(&Config.ForgetUnreachable, "f", false, F_DESCR)
 	flag.BoolVar(&ForgetAllHosts, "ff", false, FF_DESCR)
 	flag.BoolVar(&IsVerbose, "v", false, V_DESCR)
-	flag.BoolVar(&SnmpSync, "ss", false, SS_DESCR)
+	flag.BoolVar(&JustGenerate, "g", false, G_DESCR)
 	flag.Parse()
 
 	if Help {
@@ -210,14 +211,7 @@ func ScanNetwork() (*HostsModel, *big.Int) {
 
 	taskQueue = CreateTaskQueue(10000000)
 
-	if SnmpSync {
-		go NetWorker(taskQueue, hostsModel)
-	} else {
-		for w := uint(0); w < Config.Workers; w++ {
-			go NetWorker(taskQueue, hostsModel)
-		}
-	}
-
+	go NetWorker(taskQueue, hostsModel)
 	for _, host := range hostsModel.Export() {
 		taskQueue.Enqueue(NetTask{ip: host.Ip, swargs: host.NetworkArgs, method: SNMP_SysNameDescr})
 	}
@@ -265,20 +259,29 @@ func ScanKnownHosts() (*HostsModel, *big.Int) {
 
 	taskQueue = CreateTaskQueue(10000000)
 
-	if SnmpSync {
-		go NetWorker(taskQueue, hostsModel)
-	} else {
-		for w := uint(0); w < Config.Workers; w++ {
-			go NetWorker(taskQueue, hostsModel)
-		}
-	}
-
+	go NetWorker(taskQueue, hostsModel)
 	for _, host := range hostsModel.Export() {
 		taskQueue.Enqueue(NetTask{ip: host.Ip, swargs: host.NetworkArgs, method: SNMP_SysNameDescr})
 	}
 
 	taskQueue.WaitAllTasksCompletesAndClose()
 	//LinkHosts(hostsModel, rootIp)
+
+	return hostsModel, big.NewInt(int64(len(hosts)))
+}
+
+func JustGenerateConfs() (*HostsModel, *big.Int) {
+
+	hosts, err := ReadHostsModel()
+	if err != nil || ForgetAllHosts {
+		ErrorAll("Cannot regenerate configs. Model file not loaded or forget option invoked.")
+	}
+
+	WriteAll("Swmon generating started for hosts file %s! Is is %d unique hosts.",
+		HOSTS_MODEL_FILE, len(hosts))
+
+	hostsModel := CreateHostsModel()
+	hostsModel.Import(hosts)
 
 	return hostsModel, big.NewInt(int64(len(hosts)))
 }

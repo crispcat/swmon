@@ -31,6 +31,8 @@ const FF_DESCR = "Forget all host already found. Mode. Not required."
 
 const V_DESCR = "Be verbose."
 
+const G_DESCR = "No scan. Just regenerate config files from saved data."
+
 const H_DESCR = "Prints that."
 
 const MAN = `
@@ -73,6 +75,8 @@ DESCRIPTION
 
 	-v 	    	` + V_DESCR + `
 
+    -g          ` + G_DESCR + `
+
 	-h --help   ` + H_DESCR + `
 
 EXAMPLE
@@ -85,7 +89,4 @@ EXAMPLE
 
 	Process full scan of the subnet with exac 200 workers:
       > sudo swmon_mapper -n 192.168.225.0/24 -s somecomstr -r 192.168.225.201 -w 200
-
-	Remap already found hosts from root and remove unreachable hosts:
-      > sudo swmon_mapper -r 192.168.225.33 -k -f
 `
