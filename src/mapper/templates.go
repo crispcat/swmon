@@ -28,7 +28,7 @@ func ConstructSwitchTemplate(host *Host) string {
 			case "Port":
 				return strconv.FormatUint(uint64(port), 10)
 			case "Descr":
-				return descr
+				return sanitizeString(descr)
 			default:
 				return ""
 			}
