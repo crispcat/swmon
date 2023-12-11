@@ -56,8 +56,8 @@ const TEMPLATE_NAGIOS_PORT_LINK_STATUS_SERVICE = `
 define service {
    use                     generic-service
    host_name               #Name#
-   service_description     #Port# Port Link Status
-   check_command           check_snmp!-C #Community# -o ifOperStatus.#Port# -r 1 -t 120 -4 -P 2c
+   service_description     #Descr# Link Status
+   check_command           check_snmp!-C #Community# -o ifOperStatus.#Port# -r 1 -t 120 -4 -P 2c -w 1 -c 99
    check_interval          10
    retry_interval          5
 }

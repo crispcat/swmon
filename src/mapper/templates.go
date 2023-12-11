@@ -21,11 +21,11 @@ func ConstructSwitchTemplate(host *Host) string {
 
 	if host.IfsCount > 0 {
 
-		var port uint32
+		var port string
 		formatter := func(key string) string {
 			switch key {
 			case "Port":
-				return strconv.FormatUint(uint64(port), 10)
+				return port
 			default:
 				return ""
 			}
@@ -33,7 +33,7 @@ func ConstructSwitchTemplate(host *Host) string {
 
 		for _, iface := range host.Interfaces {
 			if iface.Operational {
-				port = iface.SubOid
+				port = iface.Descr
 				templates = append(templates, FormatTemplate(TEMPLATE_NAGIOS_PORT_LINK_STATUS_SERVICE, formatter))
 			}
 		}
