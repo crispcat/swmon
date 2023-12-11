@@ -276,6 +276,7 @@ func sanitizeString(s string) string {
 		"\u0085", "",
 		"\u2028", "",
 		"\u2029", "",
+		" ", "_",
 	)
 	return replacer.Replace(s)
 }
@@ -357,13 +358,24 @@ func (host *Host) DefaultFormatter(fieldName string) string {
 
 func (host *Host) GetUniqueName() string {
 
-	name := host.Ip.String()
+	name := ""
+
 	if host.Location != "" {
-		name += ":::" + host.Location
+		name += host.Location
 	}
+
 	if host.Name != "" {
-		name += ":::" + host.Name
+		if name != "" {
+			name += ":::"
+		}
+		name += host.Name
 	}
+
+	if name != "" {
+		name += ":::"
+	}
+	name += host.Ip.String()
+
 	return name
 }
 

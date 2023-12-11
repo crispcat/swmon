@@ -45,7 +45,7 @@ define service {
     use                     generic-service
     host_name               #Name#
     service_description     Uptime
-    check_command           check_snmp!-C #Community# -o sysUpTime.0 || (exit 1)
+    check_command           check_snmp!-C #Community# -o sysUpTime.0 -r 1 -t 120 -4 -P 2c
     check_interval          30
     retry_interval          15
 }
@@ -57,7 +57,7 @@ define service {
    use                     generic-service
    host_name               #Name#
    service_description     #Port# Port Link Status
-   check_command           check_snmp!-C #Community# -o ifOperStatus.#Port# -r 1 || (exit 1)
+   check_command           check_snmp!-C #Community# -o ifOperStatus.#Port# -r 1 -t 120 -4 -P 2c
    check_interval          10
    retry_interval          5
 }
@@ -75,7 +75,7 @@ define service {
     host_name               localhost
     servicegroups           #ServiceGroup#
     service_description     #Name1#:Port#Port1# Link Status
-    check_command           check_snmp!-H #Ip1# -C #Community1# -o ifOperStatus.#Port1# -r 1
+    check_command           check_snmp!-H #Ip1# -C #Community1# -o ifOperStatus.#Port1# -r 3 -t 45
     check_interval          10
     retry_interval          5
 }
@@ -85,7 +85,7 @@ define service {
     host_name               localhost
     servicegroups           #ServiceGroup#
     service_description     #Name2#:Port#Port2# Link Status
-    check_command           check_snmp!-H #Ip2# -C #Community2# -o ifOperStatus.#Port2# -r 1
+    check_command           check_snmp!-H #Ip2# -C #Community2# -o ifOperStatus.#Port2# -r 3 -t 45
     check_interval          10
     retry_interval          5
 }
