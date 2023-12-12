@@ -45,9 +45,9 @@ define service {
     use                     generic-service
     host_name               #Name#
     service_description     Uptime
-    check_command           check_snmp!-C #Community# -o sysUpTime.0 -r 1 -t 360 -4 -P 2c
-    check_interval          500
-    retry_interval          360
+    check_command           check_snmp!-C #Community# -o sysUpTime.0 -r 1 -t 240 -4 -P 2c
+    check_interval          360
+    retry_interval          120
 }
 
 `
@@ -58,8 +58,8 @@ define service {
    host_name               #Name#
    service_description     #Descr# Link Status
    check_command           check_snmp!-C #Community# -o ifOperStatus.#Port# -r 1 -t 120 -4 -P 2c -w 1 -c 99
-   check_interval          15
-   retry_interval          5
+   check_interval          30
+   retry_interval          15
 }
 
 `
