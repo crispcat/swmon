@@ -34,8 +34,8 @@ define service {
     host_name               #Name#
     service_description     PING
     check_command           check_ping!200.0,20%!600.0,60%
-    check_interval          5
-    retry_interval          3
+    check_interval          30
+    retry_interval          15
 }
 
 `
@@ -45,9 +45,9 @@ define service {
     use                     generic-service
     host_name               #Name#
     service_description     Uptime
-    check_command           check_snmp!-C #Community# -o sysUpTime.0 -r 1 -t 120 -4 -P 2c
-    check_interval          30
-    retry_interval          15
+    check_command           check_snmp!-C #Community# -o sysUpTime.0 -r 1 -t 360 -4 -P 2c
+    check_interval          500
+    retry_interval          360
 }
 
 `
