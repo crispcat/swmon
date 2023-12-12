@@ -418,8 +418,8 @@ func (host *Host) Report(pre string, post string) string {
 	sb.WriteString(fmt.Sprintf("Name: %s", sanitizeString(host.Name)))
 	sb.WriteString(post + pre)
 	sb.WriteString(fmt.Sprintf("Location: %s", sanitizeString(host.Location)))
-	sb.WriteString(post + pre)
-	sb.WriteString(fmt.Sprintf("Description: %s", sanitizeString(host.Description)))
+	//sb.WriteString(post + pre)
+	//sb.WriteString(fmt.Sprintf("Description: %s", sanitizeString(host.Description)))
 	sb.WriteString(post)
 
 	return sb.String()
