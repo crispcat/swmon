@@ -393,7 +393,7 @@ func (host *Host) GetUniqueName() string {
 	}
 	name += host.Ip.String()
 
-	return name
+	return sanitizeString(name)
 }
 
 func (host *Host) GetUniqueAlias() string {
@@ -415,9 +415,11 @@ func (host *Host) Report(pre string, post string) string {
 
 	var sb strings.Builder
 	sb.WriteString(pre)
-	sb.WriteString(fmt.Sprintf("Name: %s", host.Name))
+	sb.WriteString(fmt.Sprintf("Name: %s", sanitizeString(host.Name)))
 	sb.WriteString(post + pre)
-	sb.WriteString(fmt.Sprintf("Description: %s", host.Description))
+	sb.WriteString(fmt.Sprintf("Location: %s", sanitizeString(host.Location)))
+	sb.WriteString(post + pre)
+	sb.WriteString(fmt.Sprintf("Description: %s", sanitizeString(host.Description)))
 	sb.WriteString(post)
 
 	return sb.String()
