@@ -34,11 +34,13 @@ func ConstructSwitchTemplate(host *Host) string {
 			}
 		}
 
-		for _, iface := range host.Interfaces {
-			if iface.Operational {
-				port = iface.SubOid
-				descr = iface.Descr
-				templates = append(templates, FormatTemplate(TEMPLATE_NAGIOS_PORT_LINK_STATUS_SERVICE, formatter))
+		if host.NetworkArgs.ScanInterfaces {
+			for _, iface := range host.Interfaces {
+				if iface.Operational {
+					port = iface.SubOid
+					descr = iface.Descr
+					templates = append(templates, FormatTemplate(TEMPLATE_NAGIOS_PORT_LINK_STATUS_SERVICE, formatter))
+				}
 			}
 		}
 	}

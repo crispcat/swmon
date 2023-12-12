@@ -20,6 +20,7 @@ var (
 	ConfigPath       string
 	ForgetAllHosts   bool
 	JustGenerate     bool
+	ScanInterfaces   bool
 )
 
 // Config are args both from command line and config
@@ -44,6 +45,7 @@ type SwmonNetworkArgs struct {
 	SnmpVersion         uint8  `yaml:"snmp_version"`
 	SnmpTimeout         uint64 `yaml:"snmp_timeout"`
 	SnmpRetries         uint8  `yaml:"snmp_retries"`
+	ScanInterfaces      bool   `yaml:"scan_interfaces"`
 }
 
 func main() {
@@ -114,6 +116,7 @@ func ParseArgsAndConfig() {
 	flag.BoolVar(&ForgetAllHosts, "ff", false, FF_DESCR)
 	flag.BoolVar(&IsVerbose, "v", false, V_DESCR)
 	flag.BoolVar(&JustGenerate, "g", false, G_DESCR)
+	flag.BoolVar(&ScanInterfaces, "i", false, I_DESCR)
 	flag.Parse()
 
 	if Help {
@@ -149,6 +152,12 @@ func ParseArgsAndConfig() {
 
 	if len(Config.Networks) == 0 {
 		ErrorAll("At least one network block must be configured using config or command line.")
+	}
+
+	if !ScanInterfaces {
+		for _, nw := range Config.Networks {
+			nw.ScanInterfaces = false
+		}
 	}
 }
 

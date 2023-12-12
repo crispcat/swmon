@@ -34,8 +34,8 @@ define service {
     host_name               #Name#
     service_description     PING
     check_command           check_ping!200.0,20%!600.0,60%
-    check_interval          10
-    retry_interval          5
+    check_interval          5
+    retry_interval          3
 }
 
 `
@@ -58,7 +58,7 @@ define service {
    host_name               #Name#
    service_description     #Descr# Link Status
    check_command           check_snmp!-C #Community# -o ifOperStatus.#Port# -r 1 -t 120 -4 -P 2c -w 1 -c 99
-   check_interval          10
+   check_interval          15
    retry_interval          5
 }
 

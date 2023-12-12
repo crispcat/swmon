@@ -57,7 +57,9 @@ func SNMP_SysNameDescr(task *NetTask, queue *NetTaskQueue, hostsMap *HostsModel)
 	WriteAll("[%s] System Name/Description: %s / %s\n", task.ip, nameRes, desRes)
 	WriteAll("[%s] System Location: %s\n", task.ip, locRes)
 
-	queue.Enqueue(NetTask{ip: task.ip, swargs: task.swargs, method: SNMP_IfNumber})
+	if task.swargs.ScanInterfaces {
+		queue.Enqueue(NetTask{ip: task.ip, swargs: task.swargs, method: SNMP_IfNumber})
+	}
 }
 
 func SNMP_IfNumber(task *NetTask, queue *NetTaskQueue, hostsMap *HostsModel) {
