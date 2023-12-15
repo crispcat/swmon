@@ -174,7 +174,7 @@ left corner. Click Edit Map -> Lock/Unlock All and drag it as you want.
 - **Swmon will not entirely rewrite your map. Swmon will not delete any host already on the map.
   If the map exists it will only add a new hosts found and update data for the old hosts.
   So, you can safely customize map and then run swmon scans. Use the -f flag if you want to delete some old hosts not presented in a network anymore.**
-- **Contact me if you run into some issues. I don't have access to any big enough network to test all possible cases.**
+- **Contact me if you ran into some issues. I don't have access to any network big enough to test all possible cases.**
 
 ## Licence
 
