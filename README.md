@@ -14,21 +14,17 @@ As a result of the scan swmon will generate three files:
 - [Nagvis](https://github.com/NagVis/nagvis) static map config written to path you decide.
 - `swmon_hosts_model.json` - state of the network during last scan.
 
-There are nothing else. Swmon just runs and generate three config files.   
-
-All futher monitoring on Nagios behalf.  
-
-Visualization - on Nagvis.
-
 ### Network devices requirements
 
-- SNMPv2 enabled on the devices (SNMPv3 is not supported yet)
+- SNMPv2 enabled on the devices
 - Known community string
 - IPv4 addresses
 
 ### What I need to see it?
 
 - [Nagios](https://github.com/NagiosEnterprises/nagioscore)
+
+### Optional (for maps):
 - [Nagios Plugins](https://github.com/nagios-plugins/nagios-plugins)
 - [Nagvis*](https://github.com/NagVis/nagvis)
 - Some [Nagvis backend](http://docs.nagvis.org/1.9/en_US/backends.html)   
@@ -174,10 +170,10 @@ left corner. Click Edit Map -> Lock/Unlock All and drag it as you want.
 
 <a href="https://ibb.co/ZzqLKtj"><img src="https://i.ibb.co/d48W61T/img-2.png" alt="img-2" border="0"></a>
 
-- **[Set](https://support.nagios.com/forum/viewtopic.php?f=7&t=60813) Nagios `interval_length` to `1` for "realtime" monitoring.**
+- **[Set](https://support.nagios.com/forum/viewtopic.php?f=7&t=60813) Nagios `interval_length` to `1` if you need "realtime" monitoring for a while**
 - **Swmon will not entirely rewrite your map. Swmon will not delete any host already on the map.
-  If the map exists it will only add new hosts found, and update data for the old hosts (links etc).
-  So, you can safely customize map and then run swmon scans. Use -f flag if you want to delete some old hosts not presented in the network anymore.**
+  If the map exists it will only add a new hosts found and update data for the old hosts.
+  So, you can safely customize map and then run swmon scans. Use the -f flag if you want to delete some old hosts not presented in a network anymore.**
 - **Contact me if you run into some issues. I don't have access to any big enough network to test all possible cases.**
 
 ## Licence
