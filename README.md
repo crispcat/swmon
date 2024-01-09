@@ -170,11 +170,9 @@ left corner. Click Edit Map -> Lock/Unlock All and drag it as you want.
 
 <a href="https://ibb.co/ZzqLKtj"><img src="https://i.ibb.co/d48W61T/img-2.png" alt="img-2" border="0"></a>
 
-- **[Set](https://support.nagios.com/forum/viewtopic.php?f=7&t=60813) Nagios `interval_length` to `1` if you need "realtime" monitoring for a while**
 - **Swmon will not entirely rewrite your map. Swmon will not delete any host already on the map.
   If the map exists it will only add a new hosts found and update data for the old hosts.
   So, you can safely customize map and then run swmon scans. Use the -f flag if you want to delete some old hosts not presented in a network anymore.**
-- **Contact me if you ran into some issues. I don't have access to any network big enough to test all possible cases.**
 
 ## Licence
 
