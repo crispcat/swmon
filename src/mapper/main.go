@@ -222,7 +222,13 @@ func ScanNetwork() (*HostsModel, *big.Int) {
 
 	go NetWorker(taskQueue, hostsModel)
 	for _, host := range hostsModel.Export() {
-		taskQueue.Enqueue(NetTask{ip: host.Ip, swargs: host.NetworkArgs, method: SNMP_SysNameDescr})
+		for _, nw := range networks {
+			for _, netwalker := range nw.Netwalkers {
+				if netwalker.Contains(host.Ip) {
+					taskQueue.Enqueue(NetTask{ip: host.Ip, swargs: host.NetworkArgs, method: SNMP_SysNameDescr})
+				}
+			}
+		}
 	}
 
 	taskQueue.WaitAllTasksCompletesAndClose()
@@ -239,6 +245,7 @@ func ScanKnownHosts() (*HostsModel, *big.Int) {
 
 	hosts, err := ReadHostsModel()
 	if err != nil || ForgetAllHosts {
+
 		return ScanNetwork()
 	}
 

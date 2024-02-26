@@ -78,3 +78,8 @@ func (nw *Netwalker) AddressRange() uint32 {
 
 	return (nw.End - nw.Start) + 1
 }
+
+func (nw *Netwalker) Contains(ip net.IP) bool {
+	ipInt := binary.BigEndian.Uint32(ip)
+	return ipInt >= nw.Start && ipInt <= nw.End
+}
