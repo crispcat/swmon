@@ -258,7 +258,10 @@ func CreateHost(ip net.IP) *Host {
 }
 
 func (host *Host) SetUniqueName(name string) {
+	host.Name = name
+}
 
+func (host *Host) SetUniqueAlias(name string) {
 	if name == "" {
 		host.Name = host.Ip.String()
 	} else {
@@ -294,6 +297,7 @@ func sanitizeString(s string) string {
 		"|", "_",
 		"'", "_",
 		"\"", "_",
+		"\x00", "",
 	)
 	return replacer.Replace(s)
 }
